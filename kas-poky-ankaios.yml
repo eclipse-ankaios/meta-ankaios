@@ -1,5 +1,5 @@
 header:
-  version: 19
+  version: 14
 
 # The machine as it is written into the `local.conf` of bitbake.
 machine: qemux86-64
@@ -17,6 +17,7 @@ repos:
       meta:
       meta-poky:
       meta-yocto-bsp:
+    path: layers/poky
   meta-openembedded:
     url: http://git.openembedded.org/meta-openembedded
     branch: walnascar
@@ -25,9 +26,11 @@ repos:
       meta-python:
       meta-networking:
       meta-filesystems:      
+    path: layers/meta-openembedded
   meta-virtualization:
     url: http:///git.yoctoproject.org/meta-virtualization
     branch: walnascar
+    path: layers/meta-virtualization
 
 bblayers_conf_header:
   meta-ankaios: |

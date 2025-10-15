@@ -4,45 +4,27 @@ This repo contains a Yocto Metadata layer for Eclipse Ankaios.
 
 It based on Yocto 5.2 as Ankaios v0.6.0 uses Rust edition 2021 and `Cargo.lock` version 4 and thus at least Rust toolchains 1.78 is required.
 
-
 ## Preconditions
 
-To build a Yocto image you need a compatible Linux distribution like Ubuntu with
+To build a Yocto image you need
 
 * At least 90 GB of free disk space
 * At least 20-32 GB of RAM
 
-To install the essential host packages:
-
-``` shell
-sudo apt-get install build-essential chrpath cpio debianutils diffstat file gawk gcc git iputils-ping libacl1 liblz4-tool locales python3 python3-git python3-jinja2 python3-pexpect python3-pip python3-subunit socat texinfo unzip wget xz-utils zstd
-```
-
-The easiest way to build the image is using the [kas](https://kas.readthedocs.io/en/latest/) tool. Install it with:
-
-```shell
-sudo pip3 install .
-```
-
 ## Build
 
-First create a project folder:
+The dev container keeps all required tools.
+Within the container start the build.
+It takes a couple of hours depending on the host machine.
 
 ```shell
-mkdir myproj
-cd myproj
+kas build kas-poky-ankaios.yml
 ```
 
-Then clone this repo:
+Afterwards you can run the image with qemu and login with user `root` (no password):
 
 ```shell
-git clone https://...
-```
-
-Then we can start the build. It takes a couple fo hours depending on the host machine.
-
-```shell
-kas build meta-ankaios/kas-poky-ankaios.yml
+runqemu nographic slirp
 ```
 
 ## FAQ
@@ -54,4 +36,3 @@ Answer: Problems might be out of memory or disk space. Check the remaining disk 
 [wsl2]
 memory=25GB
 ```
-
