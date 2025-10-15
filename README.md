@@ -2,9 +2,12 @@
 
 This repo contains a Yocto Metadata layer for Eclipse Ankaios.
 
+It based on Yocto 5.2 as Ankaios v0.6.0 uses Rust edition 2021 and `Cargo.lock` version 4 and thus at least Rust toolchains 1.78 is required.
+
+
 ## Preconditions
 
-To build a Yocto image you need a comptaible Linux distribution like Ubuntu with
+To build a Yocto image you need a compatible Linux distribution like Ubuntu with
 
 * At least 90 GB of free disk space
 * At least 20-32 GB of RAM

@@ -1,0 +1,64 @@
+header:
+  version: 19
+
+# The machine as it is written into the `local.conf` of bitbake.
+machine: qemux86-64
+# The distro name as it is written into the `local.conf` of bitbake.
+distro: poky
+
+target: core-image-full-cmdline
+
+repos:
+  meta-ankaios:
+  poky:
+    url: "https://git.yoctoproject.org/git/poky"
+    branch: walnascar
+    layers:
+      meta:
+      meta-poky:
+      meta-yocto-bsp:
+  meta-openembedded:
+    url: http://git.openembedded.org/meta-openembedded
+    branch: walnascar
+    layers:
+      meta-oe:
+      meta-python:
+      meta-networking:
+      meta-filesystems:      
+  meta-virtualization:
+    url: http:///git.yoctoproject.org/meta-virtualization
+    branch: walnascar
+
+bblayers_conf_header:
+  meta-ankaios: |
+    POKY_BBLAYERS_CONF_VERSION = "2"
+    BBPATH = "${TOPDIR}"
+    BBFILES ?= ""
+local_conf_header:
+  meta-ankaios: |
+    EXTRA_IMAGE_FEATURES ?= "allow-empty-password empty-root-password allow-root-login"
+    USER_CLASSES ?= "buildstats"
+    PATCHRESOLVE = "noop"
+    BB_DISKMON_DIRS ??= "\
+        STOPTASKS,${TMPDIR},1G,100K \
+        STOPTASKS,${DL_DIR},1G,100K \
+        STOPTASKS,${SSTATE_DIR},1G,100K \
+        STOPTASKS,/tmp,100M,100K \
+        HALT,${TMPDIR},100M,1K \
+        HALT,${DL_DIR},100M,1K \
+        HALT,${SSTATE_DIR},100M,1K \
+        HALT,/tmp,10M,1K"
+    PACKAGECONFIG:append:pn-qemu-system-native = " sdl"    
+    CONF_VERSION = "2"
+    DISTRO_FEATURES:append = " systemd virtualization usrmerge"
+
+    VIRTUAL-RUNTIME_init_manager = "systemd"
+    VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
+
+    # For network connectivity
+    # and also make sure to call "runqemu slirp" for using user networking
+    IMAGE_INSTALL:append = " connman"
+
+    IMAGE_ROOTFS_EXTRA_SPACE = "20000000"
+
+    IMAGE_INSTALL:append = " podman ankaios curl tmux"
