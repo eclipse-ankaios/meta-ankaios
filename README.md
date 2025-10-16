@@ -21,9 +21,12 @@ It takes a couple of hours depending on the host machine.
 kas build kas-poky-ankaios.yml
 ```
 
-Afterwards you can run the image with qemu and login with user `root` (no password):
+Afterwards you can start a kas shell and run the image with qemu and login with user `root` (no password):
 
 ```shell
+# First start the shell
+kas shell kas-poky-ankaios.yml
+# And in the shell run qemu
 runqemu nographic slirp
 ```
 
