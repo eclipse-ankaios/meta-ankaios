@@ -32,8 +32,9 @@ runqemu nographic slirp
 
 ## FAQ
 
-Question: The build suddenly exits with "[process exited with code 1 (0x00000001)]".
-Answer: Problems might be out of memory or disk space. Check the remaining disk space with `df -h`. Check the memory with `free -h`. On WSL2 you can increase the memory by editing `%USERPROFILE%\.wslconfig` and adding:
+**Question**: The build suddenly exits with "[process exited with code 1 (0x00000001)]".
+
+**Answer**: Problems might be out of memory or disk space. Check the remaining disk space with `df -h`. Check the memory with `free -h`. On WSL2 you can increase the memory by editing `%USERPROFILE%\.wslconfig` and adding:
 
 ```
 [wsl2]
