@@ -6,13 +6,14 @@ SUMMARY = "Eclipse Ankaios: Lightweight container runtime for embedded Linux (ve
 DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded Linux systems. This recipe uses the official vendored source archive."
 
 SRC_URI = "git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=main"
+# v0.6.0 tag commit
 SRCREV = "58b26c026cebf54207a6dae7e52df29648065dd7"
 
 SRC_URI += "file://state.yaml"
 SRC_URI += "file://ank-server.conf"
 SRC_URI += "file://ank-agent.conf"
 
-require ${BPN}-crates.inc
+require ${BPN}-crates-${PV}.inc
 
 S = "${WORKDIR}/git"
 
