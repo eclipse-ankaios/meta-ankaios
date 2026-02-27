@@ -60,6 +60,9 @@ kas shell kas-poky-ankaios-minimal-sysvinit.yml
 runqemu snapshot nographic slirp
 ```
 
+This image does not provide tmux because of missing locales and tools in minimal image.
+You can start ank server and agent in the background and pipe the logs to appropriate files.
+
 ## FAQ
 
 **Question**: The build suddenly exits with "[process exited with code 1 (0x00000001)]".
