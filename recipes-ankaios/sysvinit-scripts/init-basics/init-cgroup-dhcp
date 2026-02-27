@@ -18,8 +18,8 @@ case "$1" in
             mount -t cgroup2 none /sys/fs/cgroup
         fi
 
-        # Start udhcpc on eth0 (adjust interface as needed)
-        udhcpc -i eth0 -b -p /var/run/udhcpc.eth0.pid
+        # Start udhcpc with custom script (DNS only)
+        udhcpc -i eth0 -b -s /usr/share/udhcpc/dns-only -p /var/run/udhcpc.eth0.pid
         ;;
 
     stop)
