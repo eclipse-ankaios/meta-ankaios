@@ -5,7 +5,7 @@ require ankaios-common.inc
 SUMMARY = "Eclipse Ankaios: Lightweight container runtime for embedded Linux (vendored sources)"
 DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded Linux systems. This recipe builds Ankaios from source using vendored Rust crates."
 
-SRC_URI = "git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=main"
+SRC_URI = "git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=release-1.0"
 # v1.0.0 tag commit
 SRCREV = "6e5c3fcc700aaafce2bbab875466f8cb9ee22c79"
 
