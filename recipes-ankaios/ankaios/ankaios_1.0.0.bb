@@ -1,9 +1,7 @@
-# Recipe for Eclipse Ankaios v1.0.0 with vendored dependencies
+SUMMARY = "Eclipse Ankaios: Lightweight container orchestrator for embedded Linux"
+DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded Linux systems. This recipe builds Ankaios from source using vendored Rust crates."
 
 require ankaios-common.inc
-
-SUMMARY = "Eclipse Ankaios: Lightweight container runtime for embedded Linux (vendored sources)"
-DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded Linux systems. This recipe builds Ankaios from source using vendored Rust crates."
 
 SRC_URI = "git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=release-1.0"
 # v1.0.0 tag commit
