@@ -98,3 +98,6 @@ local_conf_header:
 
     # Add ankaios and podman to the image
     IMAGE_INSTALL:append = " podman ankaios"
+
+    # Add SysV init scripts for ankaios (ank-server + ank-agent)
+    IMAGE_INSTALL:append = " sysvinit-ankaios"
