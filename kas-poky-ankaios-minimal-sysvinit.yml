@@ -96,8 +96,13 @@ local_conf_header:
     # Add additional nice tools ;)
     IMAGE_INSTALL:append = " curl"
 
-    # Add ankaios and podman to the image
-    IMAGE_INSTALL:append = " podman ankaios"
+    # Add podman to the image
+    IMAGE_INSTALL:append = " podman"
+
+    # Add ankaios to the image
+    # IMAGE_INSTALL:append = " ankaios" # Pulled automatically as a dependency of sysvinit-ankaios
 
     # Add SysV init scripts for ankaios (ank-server + ank-agent)
+    # Please note that the init package depends on ankaios and will install both ank-server and ank-agent.
+    # If only one of them is needed, use sysvinit-ankaios-server or sysvinit-ankaios-agent instead.
     IMAGE_INSTALL:append = " sysvinit-ankaios"

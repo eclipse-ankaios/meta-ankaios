@@ -19,8 +19,31 @@ inherit cargo cargo-update-recipe-crates systemd
 # Build dependencies
 DEPENDS += "protobuf-native"
 
-# Install systemd service files if systemd is enabled
-SYSTEMD_SERVICE:${PN} = "ank-server.service ank-agent.service"
+# Package split:
+# - ank-server: server binary + server config + systemd unit
+# - ank-agent: agent binary + agent config + systemd unit
+# - ank: CLI binary ("ank")
+# - ankaios (${PN}): meta package pulling server+agent+cli
+PACKAGE_BEFORE_PN = "ank-server ank-agent ank"
+
+FILES:${PN} = ""
+ALLOW_EMPTY:${PN} = "1"
+RDEPENDS:${PN} = "ank-server ank-agent ank"
+
+FILES:ank-server = "${bindir}/ank-server ${systemd_system_unitdir}/ank-server.service ${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
+FILES:ank-agent = "${bindir}/ank-agent ${systemd_system_unitdir}/ank-agent.service ${sysconfdir}/ankaios/ank-agent.conf"
+FILES:ank = "${bindir}/ank"
+
+RPROVIDES:ank-server += "virtual/ank-server"
+RPROVIDES:ank-agent += "virtual/ank-agent"
+
+CONFFILES:ank-server = "${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
+CONFFILES:ank-agent = "${sysconfdir}/ankaios/ank-agent.conf"
+
+# Install/enable systemd units when systemd is enabled
+SYSTEMD_PACKAGES = "ank-server ank-agent"
+SYSTEMD_SERVICE:ank-server = "ank-server.service"
+SYSTEMD_SERVICE:ank-agent = "ank-agent.service"
 SYSTEMD_AUTO_ENABLE = "enable"
 
 do_install() {

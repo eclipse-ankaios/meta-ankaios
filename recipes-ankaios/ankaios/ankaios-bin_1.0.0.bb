@@ -25,7 +25,30 @@ SRC_URI[license.sha256sum] = "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb
 # The binaries are only unpacked
 S = "${UNPACKDIR}"
 
-SYSTEMD_SERVICE:${PN} = "ank-server.service ank-agent.service"
+# Package split:
+# - ank-server-bin: server binary + server config (+ systemd unit)
+# - ank-agent-bin: agent binary + agent config (+ systemd unit)
+# - ank-bin: CLI binary ("ank")
+# - ankaios-bin (${PN}): meta package pulling server+agent+cli
+PACKAGE_BEFORE_PN = "ank-server-bin ank-agent-bin ank-bin"
+
+FILES:${PN} = ""
+ALLOW_EMPTY:${PN} = "1"
+RDEPENDS:${PN} = "ank-server-bin ank-agent-bin ank-bin"
+
+FILES:ank-server-bin = "${bindir}/ank-server ${systemd_system_unitdir}/ank-server.service ${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
+FILES:ank-agent-bin = "${bindir}/ank-agent ${systemd_system_unitdir}/ank-agent.service ${sysconfdir}/ankaios/ank-agent.conf"
+FILES:ank-bin = "${bindir}/ank"
+
+RPROVIDES:ank-server-bin += "virtual/ank-server"
+RPROVIDES:ank-agent-bin += "virtual/ank-agent"
+
+CONFFILES:ank-server-bin = "${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
+CONFFILES:ank-agent-bin = "${sysconfdir}/ankaios/ank-agent.conf"
+
+SYSTEMD_PACKAGES = "ank-server-bin ank-agent-bin"
+SYSTEMD_SERVICE:ank-server-bin = "ank-server.service"
+SYSTEMD_SERVICE:ank-agent-bin = "ank-agent.service"
 SYSTEMD_AUTO_ENABLE = "enable"
 
 do_configure[noexec] = "1"
@@ -68,5 +91,3 @@ ExecStart=${bindir}/ank-agent
 WantedBy=default.target
 EOF
 }
-
-FILES:${PN} += "${systemd_system_unitdir} ${sysconfdir}/ankaios"
