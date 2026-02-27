@@ -22,8 +22,8 @@ FILES:${PN} = ""
 ALLOW_EMPTY:${PN} = "1"
 
 RDEPENDS:${PN} = "${PN}-server ${PN}-agent"
-RDEPENDS:${PN}-server = "ankaios"
-RDEPENDS:${PN}-agent = "ankaios"
+RDEPENDS:${PN}-server = "ank-server"
+RDEPENDS:${PN}-agent = "ank-agent"
 
 INITSCRIPT_PACKAGES = "${PN}-server ${PN}-agent"
 
