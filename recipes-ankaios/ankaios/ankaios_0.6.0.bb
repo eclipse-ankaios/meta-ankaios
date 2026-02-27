@@ -1,10 +1,9 @@
 # Recipe for Eclipse Ankaios v0.6.0 with vendored dependencies
 
+require ankaios-common.inc
+
 SUMMARY = "Eclipse Ankaios: Lightweight container runtime for embedded Linux (vendored sources)"
 DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded Linux systems. This recipe uses the official vendored source archive."
-HOMEPAGE = "https://eclipse-ankaios.github.io/"
-LICENSE = "Apache-2.0"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 SRC_URI = "git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=main"
 SRCREV = "58b26c026cebf54207a6dae7e52df29648065dd7"

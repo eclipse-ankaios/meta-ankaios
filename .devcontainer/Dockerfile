@@ -30,6 +30,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     python3-pexpect \
     python3-pip \
     python3-subunit \
+    python3-websockets \
     socat \
     texinfo \
     unzip \
