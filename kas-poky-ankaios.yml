@@ -19,7 +19,7 @@ repos:
       meta-yocto-bsp:
     path: layers/poky
   meta-openembedded:
-    url: http://git.openembedded.org/meta-openembedded
+    url: "https://git.openembedded.org/meta-openembedded"
     branch: walnascar
     layers:
       meta-oe:
@@ -28,7 +28,7 @@ repos:
       meta-filesystems:      
     path: layers/meta-openembedded
   meta-virtualization:
-    url: http:///git.yoctoproject.org/meta-virtualization
+    url: "https://git.yoctoproject.org/meta-virtualization"
     branch: walnascar
     path: layers/meta-virtualization
 
@@ -58,10 +58,8 @@ local_conf_header:
     VIRTUAL-RUNTIME_init_manager = "systemd"
     VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
 
-    # For network connectivity
-    # and also make sure to call "runqemu slirp" for using user networking
-    IMAGE_INSTALL:append = " connman"
+    # Required for the podman CNI portmap
+    IMAGE_INSTALL:append = " kernel-module-xt-multiport"
 
     IMAGE_ROOTFS_EXTRA_SPACE = "20000000"
-
     IMAGE_INSTALL:append = " podman ankaios curl tmux"
