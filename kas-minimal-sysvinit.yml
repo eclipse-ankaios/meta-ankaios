@@ -8,10 +8,6 @@ target: core-image-minimal
 local_conf_header:
   meta-ankaios-sysvinit: |
 
-    # Uncomment to build an uncompressed image that does not require to run with snapshot
-    # IMAGE_FSTYPES:remove = " ext4.zst"
-    # IMAGE_FSTYPES:append = " ext4"
-
     # Add init-basics to the image, which provides basic init scripts for dns and cgroup mounting
     IMAGE_INSTALL:append = " init-basics"
 
