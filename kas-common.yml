@@ -75,6 +75,10 @@ local_conf_header:
     # No SDL (Simple DirectMedia Layer) support required for the minimal image
     # PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
 
+    # Uncomment to build an uncompressed image that does not require to run with snapshot
+    # IMAGE_FSTYPES:remove = " ext4.zst"
+    # IMAGE_FSTYPES:append = " ext4"
+
     DISTRO_FEATURES:append = " virtualization"
 
     # Add additional common tools
