@@ -16,8 +16,8 @@ To build a Yocto image you need
 The dev container already has all required tools installed so the build can be easily stared in it.
 
 The repo contains two kas build configs: 
-* [kas-poky-ankaios.yaml] - building a core-image-full-cmdline with systemd as init manager and automatic ankaios start via systemd units
-* [kas-poky-ankaios-minimal-sysvinit.yaml] - building a core-image-minimal with sysvinit
+* [kas-full-cmd-systemd.yaml] - building a core-image-full-cmdline with systemd as init manager and automatic ankaios start via systemd units
+* [kas-minimal-sysvinit.yaml] - building a core-image-minimal with sysvinit
 
 Both images can run Ankaios and start containers with Podman.
 
@@ -29,14 +29,14 @@ Currently this build does not used prebuild cached artefacts and the build
 takes a couple of hours depending on the host machine.
 
 ```shell
-kas build kas-poky-ankaios.yml
+kas build kas-full-cmd-systemd.yml
 ```
 
 Afterwards you can start a kas shell and run the image with qemu and login with user `root` (no password):
 
 ```shell
 # First start the shell
-kas shell kas-poky-ankaios.yml
+kas shell kas-full-cmd-systemd.yml
 # And in the shell run qemu
 runqemu nographic slirp
 ```
@@ -48,14 +48,14 @@ This config builds a smaller image and uses prebuild artefacts so the build is s
 For more info on the cached artefacts see the following options in the kas file: `BB_HASHSERVE_UPSTREAM`, `SSTATE_MIRRORS`, `BB_HASHSERVE` and `BB_SIGNATURE_HANDLER`.
 
 ```shell
-kas build kas-poky-ankaios-minimal-sysvinit.yml
+kas build kas-minimal-sysvinit.yml
 ```
 
 Afterwards you can start a kas shell and run the image with qemu and login with user `root` (no password):
 
 ```shell
 # First start the shell
-kas shell kas-poky-ankaios-minimal-sysvinit.yml
+kas shell kas-minimal-sysvinit.yml
 # And in the shell run qemu
 runqemu snapshot nographic slirp
 ```
