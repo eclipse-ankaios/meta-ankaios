@@ -54,6 +54,7 @@ bblayers_conf_header:
     BBFILES ?= ""
 local_conf_header:
   meta-ankaios: |
+    CONF_VERSION = "2"
     EXTRA_IMAGE_FEATURES ?= "allow-empty-password empty-root-password allow-root-login"
     USER_CLASSES ?= "buildstats"
     PATCHRESOLVE = "noop"
@@ -77,18 +78,11 @@ local_conf_header:
     # No SDL (Simple DirectMedia Layer) support required for the minimal image
     # PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
 
-    CONF_VERSION = "2"
     DISTRO_FEATURES:append = " virtualization"
 
     # Uncomment to build an uncompressed image that does not require to run with snapshot
     # IMAGE_FSTYPES:remove = " ext4.zst"
     # IMAGE_FSTYPES:append = " ext4"
-
-    # Required for the podman CNI portmap
-    IMAGE_INSTALL:append = " kernel-module-xt-multiport"
-
-    # Add 2GB of extra space to the root filesystem
-    IMAGE_ROOTFS_EXTRA_SPACE = "2000000"
 
     # Add init-basics to the image, which provides basic init scripts for dns and cgroup mounting
     IMAGE_INSTALL:append = " init-basics"
@@ -98,6 +92,8 @@ local_conf_header:
 
     # Add podman to the image
     IMAGE_INSTALL:append = " podman"
+    # Required for the podman CNI portmap
+    IMAGE_INSTALL:append = " kernel-module-xt-multiport"
 
     # Add ankaios to the image
     # IMAGE_INSTALL:append = " ankaios" # Pulled automatically as a dependency of sysvinit-ankaios
@@ -106,3 +102,6 @@ local_conf_header:
     # Please note that the init package depends on ankaios and will install both ank-server and ank-agent.
     # If only one of them is needed, use sysvinit-ankaios-server or sysvinit-ankaios-agent instead.
     IMAGE_INSTALL:append = " sysvinit-ankaios"
+
+    # Add 2GB of extra space to the root filesystem
+    IMAGE_ROOTFS_EXTRA_SPACE = "2000000"

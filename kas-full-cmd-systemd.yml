@@ -10,26 +10,41 @@ target: core-image-full-cmdline
 
 repos:
   meta-ankaios:
-  poky:
-    url: "https://git.yoctoproject.org/git/poky"
-    branch: walnascar
+
+  bitbake:
+    url: "https://git.openembedded.org/bitbake"
+    branch: "2.16"
+    path: layers/bitbake
+    layers: {}
+
+  openembedded-core:
+    url: "https://git.openembedded.org/openembedded-core"
+    branch: whinlatter
     layers:
       meta:
+    path: layers/openembedded-core
+
+  meta-yocto:
+    url: "https://git.yoctoproject.org/meta-yocto"
+    branch: whinlatter
+    layers:
       meta-poky:
       meta-yocto-bsp:
-    path: layers/poky
+    path: layers/meta-yocto
+
   meta-openembedded:
     url: "https://git.openembedded.org/meta-openembedded"
-    branch: walnascar
+    branch: whinlatter
     layers:
       meta-oe:
       meta-python:
       meta-networking:
       meta-filesystems:      
     path: layers/meta-openembedded
+
   meta-virtualization:
     url: "https://git.yoctoproject.org/meta-virtualization"
-    branch: walnascar
+    branch: whinlatter
     path: layers/meta-virtualization
 
 bblayers_conf_header:
@@ -39,6 +54,7 @@ bblayers_conf_header:
     BBFILES ?= ""
 local_conf_header:
   meta-ankaios: |
+    CONF_VERSION = "2"
     EXTRA_IMAGE_FEATURES ?= "allow-empty-password empty-root-password allow-root-login"
     USER_CLASSES ?= "buildstats"
     PATCHRESOLVE = "noop"
@@ -51,15 +67,32 @@ local_conf_header:
         HALT,${DL_DIR},100M,1K \
         HALT,${SSTATE_DIR},100M,1K \
         HALT,/tmp,10M,1K"
-    PACKAGECONFIG:append:pn-qemu-system-native = " sdl"    
-    CONF_VERSION = "2"
+
+    # Yocto Project SState Mirror 
+    BB_HASHSERVE_UPSTREAM = 'wss://hashserv.yoctoproject.org/ws'
+    SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
+    # Enable reuse of sstate by detecting when a given sstate artifact can be reused as equivalent
+    BB_HASHSERVE = "auto"
+    BB_SIGNATURE_HANDLER = "OEEquivHash"
+    
+    # No SDL (Simple DirectMedia Layer) support required for the minimal image
+    # PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
+
     DISTRO_FEATURES:append = " systemd virtualization usrmerge"
 
     VIRTUAL-RUNTIME_init_manager = "systemd"
     VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
 
+    # Add additional nice tools ;)
+    IMAGE_INSTALL:append = " curl tmux"
+
+    # Add podman to the image
+    IMAGE_INSTALL:append = " podman"
     # Required for the podman CNI portmap
     IMAGE_INSTALL:append = " kernel-module-xt-multiport"
 
-    IMAGE_ROOTFS_EXTRA_SPACE = "20000000"
-    IMAGE_INSTALL:append = " podman ankaios curl tmux"
+    # Add ankaios to the image
+    IMAGE_INSTALL:append = " ankaios"
+
+    # Add 2GB of extra space to the root filesystem
+    IMAGE_ROOTFS_EXTRA_SPACE = "2000000"
