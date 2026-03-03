@@ -15,7 +15,8 @@ To build a Yocto image you need
 
 The dev container already has all required tools installed so the build can be easily stared in it.
 
-The repo contains two kas build configs: 
+The repo contains two kas build configs:
+
 * [kas-full-cmd-systemd.yaml] - building a core-image-full-cmdline with systemd as init manager and automatic ankaios start via systemd units
 * [kas-minimal-sysvinit.yaml] - building a core-image-minimal with sysvinit
 
@@ -38,7 +39,7 @@ Afterwards you can start a kas shell and run the image with qemu and login with 
 # First start the shell
 kas shell kas-full-cmd-systemd.yml
 # And in the shell run qemu
-runqemu nographic slirp
+runqemu snapshot nographic slirp
 ```
 
 ### Building a minimal image with sysvinit as init manager
@@ -69,7 +70,7 @@ You can start ank server and agent in the background and pipe the logs to approp
 
 **Answer**: Problems might be out of memory or disk space. Check the remaining disk space with `df -h`. Check the memory with `free -h`. On WSL2 you can increase the memory by editing `%USERPROFILE%\.wslconfig` and adding:
 
-```
+```toml
 [wsl2]
 memory=25GB
 ```
