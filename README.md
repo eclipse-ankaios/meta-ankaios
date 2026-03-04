@@ -81,6 +81,10 @@ and the supported machine targets:
 * `raspberrypi4-64`
 * `raspberrypi5`
 
+For Raspberry Pi machine targets (`raspberrypi4-64` and `raspberrypi5`), the image includes
+`ankaios-rpi-rootfs-resize`, which expands the root partition and filesystem on first boot
+to use the full SD card capacity.
+
 After the setup is complete, source the environment with:
 
 `. bitbake-builds/<runtime-oriented config>-<machine targets>/build/init-build-env`
