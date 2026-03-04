@@ -2,7 +2,7 @@
 
 This repo contains a Yocto Metadata layer for Eclipse Ankaios.
 
-It based on Yocto 5.2 as Ankaios v0.6.0 uses Rust edition 2021 and `Cargo.lock` version 4 and thus at least Rust toolchains 1.78 is required.
+It based on Yocto 5.3 "Whinlatter" and Ankaios v1.
 
 ## Preconditions
 
@@ -63,6 +63,60 @@ runqemu snapshot nographic slirp
 
 This image does not provide tmux because of missing locales and tools in minimal image.
 You can start ank server and agent in the background and pipe the logs to appropriate files.
+
+### Building with bitbake-setup
+
+As an alternative to `kas`, this repository now includes a `bitbake-setup` profile. You can initiate the setup with:
+
+`layers/bitbake/bin/bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json <runtime-oriented config> <machine target>`
+
+The suported runtime-oriented configurations are:
+
+* `ankaios-sysvinit`
+* `ankaios-systemd`
+
+and the supported machine targets:
+
+* `qemux86-64`
+* `raspberrypi4-64`
+* `raspberrypi5`
+
+After the setup is complete, source the environment with:
+
+`. bitbake-builds/<runtime-oriented config>-<machine targets>/build/init-build-env`
+
+And trigger the `bitbake` build with the desitred image target:
+
+`bitbake <image-target>`
+
+The following image targets are tested, but others would probabaly work too:
+
+* `core-image-minimal`
+* `core-image-full-cmdline`
+
+After the build is complete, run QEMU from the same shell with:
+
+```shell
+runqemu snapshot nographic slirp
+```
+
+#### Example builds
+
+For a minimal image with a SysV init configuration for `qemux86-64`:
+
+```shell
+layers/bitbake/bin/bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/qemux86-64
+. bitbake-builds/ankaios-sysvinit-qemux86-64/build/init-build-env
+bitbake core-image-minimal
+```
+
+Systemd configuration example:
+
+```shell
+layers/bitbake/bin/bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-systemd machine/qemux86-64
+. bitbake-builds/ankaios-systemd-qemux86-64/build/init-build-env
+bitbake core-image-full-cmdline
+```
 
 ## FAQ
 
