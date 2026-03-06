@@ -11,13 +11,8 @@ local_conf_header:
     # Add init-basics to the image, which provides basic init scripts for dns and cgroup mounting
     IMAGE_INSTALL:append = " init-basics"
 
-    # Add ankaios to the image
-    # IMAGE_INSTALL:append = " ankaios" # Pulled automatically as a dependency of sysvinit-ankaios
-
-    # Add SysV init scripts for ankaios (ank-server + ank-agent)
-    # Please note that the init package depends on ankaios and will install both ank-server and ank-agent.
-    # If only one of them is needed, use sysvinit-ankaios-server or sysvinit-ankaios-agent instead.
-    IMAGE_INSTALL:append = " sysvinit-ankaios"
+    # Add ankaios to the image (provides conditional systemd/sysvinit service integration)
+    IMAGE_INSTALL:append = " ankaios"
 
     # Add 2GB of extra space to the root filesystem
     IMAGE_ROOTFS_EXTRA_SPACE = "2000000"
