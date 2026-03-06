@@ -13,6 +13,17 @@ To build a Yocto image you need
 
 ## Build
 
+All builds in this repository are configured to use a shared cache location for all build variants:
+
+* downloads: `/workspace/bitbake-shared-cache/downloads`
+* sstate: `/workspace/bitbake-shared-cache/sstate-cache`
+
+This allows `kas` and `bitbake-setup` builds to reuse downloaded sources and sstate artifacts across different build directories.
+
+If you add additional builds, please ensure to use the cache in order to avoid storage full problems.
+
+### Building with kas
+
 The dev container already has all required tools installed so the build can be easily stared in it.
 
 The repo contains two kas build configs:
@@ -24,10 +35,9 @@ Both images can run Ankaios and start containers with Podman.
 
 For details on building and running them see the next two sections.
 
-### Building a full-cmdline image with systemd
+#### Building a full-cmdline image with systemd
 
-Currently this build does not used prebuild cached artefacts and the build
-takes a couple of hours depending on the host machine.
+This configuration builds a full cmdline image with systemd as init manager. To start the build just run:
 
 ```shell
 kas build kas-full-cmd-systemd.yml
@@ -42,11 +52,9 @@ kas shell kas-full-cmd-systemd.yml
 runqemu snapshot nographic slirp
 ```
 
-### Building a minimal image with sysvinit as init manager
+#### Building a minimal image with sysvinit as init manager
 
-This config builds a smaller image and uses prebuild artefacts so the build is significantly faster.
-
-For more info on the cached artefacts see the following options in the kas file: `BB_HASHSERVE_UPSTREAM`, `SSTATE_MIRRORS`, `BB_HASHSERVE` and `BB_SIGNATURE_HANDLER`.
+To build the minimal image with the SysVinit init manager run:
 
 ```shell
 kas build kas-minimal-sysvinit.yml
@@ -66,11 +74,15 @@ You can start ank server and agent in the background and pipe the logs to approp
 
 ### Building with bitbake-setup
 
-As an alternative to `kas`, this repository now includes a `bitbake-setup` profile. You can initiate the setup with:
+As an alternative to `kas`, this repository also includes a `bitbake-setup` profile - [bitbake-setup-ankaiso.conf.json](bitbake-setup-ankaiso.conf.json). The `bitbake-setup` executable is provided by the bitbake repo which is not included in the current devcontainer. If you first run `kas` `bitbake` will already be available in the expected location, but if you skip this and directly want to use `bitbake-setup` you will have to prepare the environment first (currently just checkout the bitbake repo). To do so, just run once the following script:
 
-`layers/bitbake/bin/bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json <runtime-oriented config> <machine target>`
+`./scripts/bitbake-setup-init.sh`
 
-The suported runtime-oriented configurations are:
+Afterwards (or if bitbake was already available) continue with the setup init:
+
+`bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json <runtime-oriented config> <machine target>`
+
+The supported runtime-oriented configurations are:
 
 * `ankaios-sysvinit`
 * `ankaios-systemd`
@@ -89,11 +101,11 @@ After the setup is complete, source the environment with:
 
 `. bitbake-builds/<runtime-oriented config>-<machine targets>/build/init-build-env`
 
-And trigger the `bitbake` build with the desitred image target:
+And trigger the `bitbake` build with the desired image target:
 
 `bitbake <image-target>`
 
-The following image targets are tested, but others would probabaly work too:
+The following image targets are tested, but others would probably work too:
 
 * `core-image-minimal`
 * `core-image-full-cmdline`
@@ -104,20 +116,26 @@ After the build is complete, run QEMU from the same shell with:
 runqemu snapshot nographic slirp
 ```
 
-#### Example builds
+The following two examples show how to build the images that correspond to the `kas` builds, but you can also mix and match with different configs. For example, you can try to build a full-cmdline image with SysVinit for RaspberryPi4.
+
+#### Bitbake-setup for minimal image with SysVinit
+
+Run `./scripts/bitbake-setup-init.sh` is bitbake is not available yet.
 
 For a minimal image with a SysV init configuration for `qemux86-64`:
 
 ```shell
-layers/bitbake/bin/bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/qemux86-64
+bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/qemux86-64
 . bitbake-builds/ankaios-sysvinit-qemux86-64/build/init-build-env
 bitbake core-image-minimal
 ```
 
+#### Bitbake-setup for full cmdline image with systemd
+
 Systemd configuration example:
 
 ```shell
-layers/bitbake/bin/bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-systemd machine/qemux86-64
+bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-systemd machine/qemux86-64
 . bitbake-builds/ankaios-systemd-qemux86-64/build/init-build-env
 bitbake core-image-full-cmdline
 ```
@@ -132,3 +150,7 @@ bitbake core-image-full-cmdline
 [wsl2]
 memory=25GB
 ```
+
+**Question**: I get fetch errors during the bitbake build.
+
+**Answer**: Unfortunately this is sometimes happening during the download of the required packages. If it happens, just rerun the build again until in succeeds.

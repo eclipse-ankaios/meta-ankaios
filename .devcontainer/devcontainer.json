@@ -17,19 +17,23 @@
                 "eamodio.gitlens",
                 "yzhang.markdown-all-in-one",
                 "bierner.markdown-preview-github-styles",
-                "DavidAnson.vscode-markdownlint"
+                "DavidAnson.vscode-markdownlint",
+                "streetsidesoftware.code-spell-checker"
             ]
         }
     },
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
-	"workspaceFolder": "/workspace",
-	"capAdd": [
-		"CAP_NET_RAW",
-		"CAP_NET_ADMIN"
-	],
-	"privileged": true,
-	"containerEnv": {
-		"KAS_CLONE_DEPTH": "1"
-	},
+    "workspaceFolder": "/workspace",
+    "capAdd": [
+        "CAP_NET_RAW",
+        "CAP_NET_ADMIN"
+    ],
+    "privileged": true,
+    "containerEnv": {
+        "KAS_CLONE_DEPTH": "1"
+    },
+    "remoteEnv": {
+        "PATH": "${containerEnv:PATH}:/workspace/layers/bitbake/bin"
+    },
     "remoteUser": "vscode"
 }
