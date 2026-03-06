@@ -1,0 +1,13 @@
+[Unit]
+Description=Ankaios server
+After=network.target
+
+[Service]
+Type=simple
+Environment="RUST_LOG=info"
+ExecStart=/usr/bin/ank-server
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

@@ -3,7 +3,7 @@ require ankaios-common.inc
 SUMMARY = "Eclipse Ankaios: Lightweight container runtime for embedded Linux (prebuilt binaries)"
 DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded Linux systems. This recipe installs the official prebuilt release binaries."
 
-inherit systemd
+inherit systemd update-rc.d
 
 ANKAIOS_GITHUB_REPO = "eclipse-ankaios/ankaios"
 ANKAIOS_RELEASE_TAG = "v${PV}"
@@ -12,6 +12,10 @@ SRC_URI = "\
     file://state.yaml \
     file://ank-server.conf \
     file://ank-agent.conf \
+    file://ank-server.service \
+    file://ank-agent.service \
+    file://ank-server \
+    file://ank-agent \
     https://raw.githubusercontent.com/${ANKAIOS_GITHUB_REPO}/${ANKAIOS_RELEASE_TAG}/LICENSE;name=license;downloadfilename=LICENSE \
 "
 
@@ -36,8 +40,8 @@ FILES:${PN} = ""
 ALLOW_EMPTY:${PN} = "1"
 RDEPENDS:${PN} = "ank-server-bin ank-agent-bin ank-bin"
 
-FILES:ank-server-bin = "${bindir}/ank-server ${systemd_system_unitdir}/ank-server.service ${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
-FILES:ank-agent-bin = "${bindir}/ank-agent ${systemd_system_unitdir}/ank-agent.service ${sysconfdir}/ankaios/ank-agent.conf"
+FILES:ank-server-bin = "${bindir}/ank-server ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-server.service', '', d)} ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-server', '', d)} ${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
+FILES:ank-agent-bin = "${bindir}/ank-agent ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-agent.service', '', d)} ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-agent', '', d)} ${sysconfdir}/ankaios/ank-agent.conf"
 FILES:ank-bin = "${bindir}/ank"
 
 RPROVIDES:ank-server-bin += "virtual/ank-server"
@@ -46,10 +50,16 @@ RPROVIDES:ank-agent-bin += "virtual/ank-agent"
 CONFFILES:ank-server-bin = "${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
 CONFFILES:ank-agent-bin = "${sysconfdir}/ankaios/ank-agent.conf"
 
-SYSTEMD_PACKAGES = "ank-server-bin ank-agent-bin"
+SYSTEMD_PACKAGES = "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'ank-server-bin ank-agent-bin', '', d)}"
 SYSTEMD_SERVICE:ank-server-bin = "ank-server.service"
 SYSTEMD_SERVICE:ank-agent-bin = "ank-agent.service"
 SYSTEMD_AUTO_ENABLE = "enable"
+
+INITSCRIPT_PACKAGES = "${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', 'ank-server-bin ank-agent-bin', '', d)}"
+INITSCRIPT_NAME:ank-server-bin = "ank-server"
+INITSCRIPT_PARAMS:ank-server-bin = "start 70 2 3 4 5 . stop 30 0 1 6 ."
+INITSCRIPT_NAME:ank-agent-bin = "ank-agent"
+INITSCRIPT_PARAMS:ank-agent-bin = "start 71 2 3 4 5 . stop 29 0 1 6 ."
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
@@ -65,29 +75,15 @@ do_install() {
     install -m 0644 ank-server.conf ${D}${sysconfdir}/ankaios/
     install -m 0644 ank-agent.conf ${D}${sysconfdir}/ankaios/
 
-    install -d ${D}${systemd_system_unitdir}
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
+        install -d ${D}${systemd_system_unitdir}
+        install -m 0644 ${UNPACKDIR}/ank-server.service ${D}${systemd_system_unitdir}/
+        install -m 0644 ${UNPACKDIR}/ank-agent.service ${D}${systemd_system_unitdir}/
+    fi
 
-    cat > ${D}${systemd_system_unitdir}/ank-server.service << EOF
-[Unit]
-Description=Ankaios server
-
-[Service]
-Environment=\"RUST_LOG=info\"
-ExecStart=${bindir}/ank-server
-
-[Install]
-WantedBy=default.target
-EOF
-
-    cat > ${D}${systemd_system_unitdir}/ank-agent.service << EOF
-[Unit]
-Description=Ankaios agent
-
-[Service]
-Environment=\"RUST_LOG=info\"
-ExecStart=${bindir}/ank-agent
-
-[Install]
-WantedBy=default.target
-EOF
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', 'true', 'false', d)}; then
+        install -d ${D}${sysconfdir}/init.d
+        install -m 0755 ${UNPACKDIR}/ank-server ${D}${sysconfdir}/init.d/ank-server
+        install -m 0755 ${UNPACKDIR}/ank-agent ${D}${sysconfdir}/init.d/ank-agent
+    fi
 }
