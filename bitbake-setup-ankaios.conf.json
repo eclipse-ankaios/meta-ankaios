@@ -102,7 +102,7 @@
                 "configurations": [
                     {
                         "name": "ankaios-sysvinit",
-                        "description": "SysV init based Ankaios runtime configuration with shared sstate/hashserve settings",
+                        "description": "Poky distribution with Ankaios and SysVinit",
                         "setup-dir-name": "ankaios-sysvinit-$machine",
                         "oe-fragments": [
                             "meta-ankaios/ankaios/minimal-sysvinit"
@@ -110,7 +110,7 @@
                     },
                     {
                         "name": "ankaios-systemd",
-                        "description": "systemd based Ankaios runtime configuration with shared sstate/hashserve settings",
+                        "description": "Poky distribution with Ankaios and systemd",
                         "setup-dir-name": "ankaios-systemd-$machine",
                         "oe-fragments": [
                             "meta-ankaios/ankaios/full-systemd"
