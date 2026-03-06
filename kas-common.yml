@@ -91,5 +91,7 @@ local_conf_header:
 
     # Add podman to the image
     IMAGE_INSTALL:append = " podman"
-    # Required for the podman CNI portmap
+    # Required for the podman CNI portmap networking
     IMAGE_INSTALL:append = " kernel-module-xt-multiport"
+    # Required for raspberry pi as not included per default
+    IMAGE_INSTALL:append = " kernel-module-bridge"
