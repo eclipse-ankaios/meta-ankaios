@@ -11,7 +11,7 @@ if [[ -d "$bitbake_dir/.git" ]]; then
 fi
 
 echo "Cloning bitbake into '$bitbake_dir'..."
-mkdir -p "$repo_root/layers"
+mkdir -p "$(dirname "$bitbake_dir")"
 git clone --depth 1 --branch 2.16 https://git.openembedded.org/bitbake "$bitbake_dir"
 
 echo "Done. bitbake and bitbake-setup are now available in '$bitbake_dir/bin'."
