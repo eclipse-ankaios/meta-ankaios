@@ -89,9 +89,9 @@ The supported runtime-oriented configurations are:
 
 and the supported machine targets:
 
-* `qemux86-64`
-* `raspberrypi4-64`
-* `raspberrypi5`
+* `machine/qemux86-64`
+* `machine/raspberrypi4-64`
+* `machine/raspberrypi5`
 
 For Raspberry Pi machine targets (`raspberrypi4-64` and `raspberrypi5`), the image includes
 `ankaios-rpi-rootfs-resize`, which expands the root partition and filesystem on first boot
@@ -101,15 +101,17 @@ After the setup is complete, source the environment with:
 
 `. bitbake-builds/<runtime-oriented config>-<machine target>/build/init-build-env`
 
-And trigger the `bitbake` build with the desired image target:
+Note that after sourcing the config, the environment is set for exactly this runtime-oriented config and machine target. Use another shell or source another environment to change this.
 
-`bitbake <image-target>`
-
-The following image targets are tested, but others would probably work too:
+Select an  image target.
+Following targets are tested, but others would probably work too:
 
 * `core-image-minimal`
 * `core-image-full-cmdline`
 
+And trigger the `bitbake` build with the desired image target:
+
+`bitbake <image-target>`
 After the build is complete, run QEMU from the same shell with:
 
 ```shell
