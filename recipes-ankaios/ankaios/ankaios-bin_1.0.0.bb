@@ -21,6 +21,7 @@ SRC_URI = "\
 
 SRC_URI:append:qemux86-64 = " https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-amd64.tar.gz;name=bin-amd64"
 SRC_URI:append:raspberrypi4-64 = " https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-arm64.tar.gz;name=bin-arm64"
+SRC_URI:append:raspberrypi5 = " https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-arm64.tar.gz;name=bin-arm64"
 
 SRC_URI[bin-amd64.sha256sum] = "26c3d122baf0cc952bfe37c7861f3f911ea2b8407771be29258beba5b3bc458e"
 SRC_URI[bin-arm64.sha256sum] = "19a3185c2e3c29f65f79a9b857745cd168db2f9030541b8408e2c8af3837a428"
@@ -40,8 +41,19 @@ FILES:${PN} = ""
 ALLOW_EMPTY:${PN} = "1"
 RDEPENDS:${PN} = "ank-server-bin ank-agent-bin ank-bin"
 
-FILES:ank-server-bin = "${bindir}/ank-server ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-server.service', '', d)} ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-server', '', d)} ${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
-FILES:ank-agent-bin = "${bindir}/ank-agent ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-agent.service', '', d)} ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-agent', '', d)} ${sysconfdir}/ankaios/ank-agent.conf"
+FILES:ank-server-bin = " \
+    ${bindir}/ank-server \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-server.service', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-server', '', d)} \
+    ${sysconfdir}/ankaios/state.yaml \
+    ${sysconfdir}/ankaios/ank-server.conf \
+"
+FILES:ank-agent-bin = " \
+    ${bindir}/ank-agent \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-agent.service', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-agent', '', d)} \
+    ${sysconfdir}/ankaios/ank-agent.conf \
+"
 FILES:ank-bin = "${bindir}/ank"
 
 RPROVIDES:ank-server-bin += "virtual/ank-server"
