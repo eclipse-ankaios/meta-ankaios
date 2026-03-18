@@ -9,13 +9,10 @@
 ### END INIT INFO
 
 case "$1" in
-    start)
+    start|restart|force-reload)
         /usr/sbin/ankaios-rpi-rootfs-resize || true
         ;;
     stop)
-        ;;
-    restart|force-reload)
-        /usr/sbin/ankaios-rpi-rootfs-resize || true
         ;;
     *)
         echo "Usage: $0 {start|stop|restart|force-reload}" >&2

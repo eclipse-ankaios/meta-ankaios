@@ -34,8 +34,19 @@ FILES:${PN} = ""
 ALLOW_EMPTY:${PN} = "1"
 RDEPENDS:${PN} = "ank-server ank-agent ank"
 
-FILES:ank-server = "${bindir}/ank-server ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-server.service', '', d)} ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-server', '', d)} ${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
-FILES:ank-agent = "${bindir}/ank-agent ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-agent.service', '', d)} ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-agent', '', d)} ${sysconfdir}/ankaios/ank-agent.conf"
+FILES:ank-server = " \
+    ${bindir}/ank-server \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-server.service', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-server', '', d)} \
+    ${sysconfdir}/ankaios/state.yaml \
+    ${sysconfdir}/ankaios/ank-server.conf \
+"
+FILES:ank-agent = " \
+    ${bindir}/ank-agent \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-agent.service', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-agent', '', d)} \
+    ${sysconfdir}/ankaios/ank-agent.conf \
+"
 FILES:ank = "${bindir}/ank"
 
 RPROVIDES:ank-server += "virtual/ank-server"

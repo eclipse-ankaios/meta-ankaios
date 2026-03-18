@@ -25,15 +25,19 @@ do_install() {
     install -d ${D}${sbindir}
     install -m 0755 ${UNPACKDIR}/ankaios-rpi-rootfs-resize.sh ${D}${sbindir}/ankaios-rpi-rootfs-resize
 
-    install -d ${D}${sysconfdir}/init.d
-    install -m 0755 ${UNPACKDIR}/ankaios-rpi-rootfs-resize.init ${D}${sysconfdir}/init.d/ankaios-rpi-rootfs-resize
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', 'true', 'false', d)}; then
+        install -d ${D}${sysconfdir}/init.d
+        install -m 0755 ${UNPACKDIR}/ankaios-rpi-rootfs-resize.init ${D}${sysconfdir}/init.d/ankaios-rpi-rootfs-resize
+    fi
 
-    install -d ${D}${systemd_unitdir}/system
-    install -m 0644 ${UNPACKDIR}/ankaios-rpi-rootfs-resize.service ${D}${systemd_unitdir}/system/
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
+        install -d ${D}${systemd_unitdir}/system
+        install -m 0644 ${UNPACKDIR}/ankaios-rpi-rootfs-resize.service ${D}${systemd_unitdir}/system/
+    fi
 }
 
 FILES:${PN} += "\
     ${sbindir}/ankaios-rpi-rootfs-resize \
-    ${sysconfdir}/init.d/ankaios-rpi-rootfs-resize \
-    ${systemd_unitdir}/system/ankaios-rpi-rootfs-resize.service \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ankaios-rpi-rootfs-resize', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_unitdir}/system/ankaios-rpi-rootfs-resize.service', '', d)} \
 "
