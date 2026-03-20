@@ -94,4 +94,5 @@ local_conf_header:
     # Required for the podman CNI portmap networking
     IMAGE_INSTALL:append = " kernel-module-xt-multiport"
     # Required for raspberry pi as not included per default
-    IMAGE_INSTALL:append = " kernel-module-bridge"
+    IMAGE_INSTALL:append:raspberrypi4-64 = " kernel-module-bridge"
+    IMAGE_INSTALL:append:raspberrypi5 = " kernel-module-bridge"
