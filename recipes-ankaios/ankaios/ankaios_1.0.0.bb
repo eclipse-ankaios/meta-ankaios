@@ -49,9 +49,6 @@ FILES:ank-agent = " \
 "
 FILES:ank = "${bindir}/ank"
 
-RPROVIDES:ank-server += "virtual/ank-server"
-RPROVIDES:ank-agent += "virtual/ank-agent"
-
 CONFFILES:ank-server = "${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
 CONFFILES:ank-agent = "${sysconfdir}/ankaios/ank-agent.conf"
 
