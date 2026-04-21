@@ -33,7 +33,7 @@
         "KAS_CLONE_DEPTH": "1"
     },
     "remoteEnv": {
-        "PATH": "${containerEnv:PATH}:/workspace/layers/bitbake/bin"
+        "PATH": "${containerEnv:PATH}:/workspace/layers/bitbake/bin:/home/vscode/.local/bin"
     },
     "remoteUser": "vscode"
 }

@@ -20,7 +20,7 @@ All builds in this repository are configured to use a shared cache location for 
 
 This allows `kas` and `bitbake-setup` builds to reuse downloaded sources and sstate artifacts across different build directories.
 
-If you add additional builds, please ensure to use the cache in order to avoid storage full problems.
+If you add additional builds, please ensure to use the cache in order to avoid storage-full problems.
 
 ### Building with kas
 
@@ -141,6 +141,18 @@ bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-s
 . bitbake-builds/ankaios-systemd-qemux86-64/build/init-build-env
 bitbake core-image-full-cmdline
 ```
+
+## Linting recipes
+
+The dev container includes `just` and `oelint-adv`.
+
+To lint all `.bb` recipe files below `recipes-ankaios`, run:
+
+```shell
+just lint
+```
+
+The command walks all subdirectories of `recipes-ankaios`, prints each parsed file, and then prints only lint warnings and errors for that file.
 
 ## FAQ
 
