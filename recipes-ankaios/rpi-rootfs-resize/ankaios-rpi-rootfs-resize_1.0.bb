@@ -1,6 +1,8 @@
 SUMMARY = "First-boot rootfs expansion on Raspberry Pi"
 DESCRIPTION = "Expands the root partition and filesystem to use the full SD card on first boot."
+HOMEPAGE = "https://eclipse-ankaios.github.io/ankaios/latest/"
 LICENSE = "Apache-2.0"
+# nooelint: oelint.var.licenseremotefile
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10"
 
 inherit systemd update-rc.d
@@ -13,7 +15,13 @@ SRC_URI = "\
 
 S = "${UNPACKDIR}"
 
-RDEPENDS:${PN} += "parted e2fsprogs-resize2fs"
+FILES:${PN} += "\
+    ${sbindir}/ankaios-rpi-rootfs-resize \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ankaios-rpi-rootfs-resize', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_unitdir}/system/ankaios-rpi-rootfs-resize.service', '', d)} \
+"
+
+RDEPENDS:${PN} += "e2fsprogs-resize2fs parted"
 
 SYSTEMD_SERVICE:${PN} = "ankaios-rpi-rootfs-resize.service"
 SYSTEMD_AUTO_ENABLE:${PN} = "enable"
@@ -35,9 +43,3 @@ do_install() {
         install -m 0644 ${UNPACKDIR}/ankaios-rpi-rootfs-resize.service ${D}${systemd_unitdir}/system/
     fi
 }
-
-FILES:${PN} += "\
-    ${sbindir}/ankaios-rpi-rootfs-resize \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ankaios-rpi-rootfs-resize', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_unitdir}/system/ankaios-rpi-rootfs-resize.service', '', d)} \
-"
