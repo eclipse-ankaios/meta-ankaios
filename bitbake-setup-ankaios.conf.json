@@ -64,8 +64,8 @@
                         "uri": "https://git.yoctoproject.org/meta-raspberrypi"
                     }
                 },
-                "branch": "master",
-                "rev": "master"
+                "branch": "whinlatter",
+                "rev": "whinlatter"
             }
         }
     },
