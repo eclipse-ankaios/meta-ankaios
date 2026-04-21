@@ -1,6 +1,6 @@
 require ankaios-common.inc
 
-SUMMARY = "Eclipse Ankaios: Lightweight container runtime for embedded Linux (prebuilt binaries)"
+SUMMARY = "Eclipse Ankaios: Lightweight container orchestrator for embedded Linux"
 DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded Linux systems. This recipe installs the official prebuilt release binaries."
 
 inherit systemd update-rc.d
@@ -9,6 +9,7 @@ ANKAIOS_GITHUB_REPO = "eclipse-ankaios/ankaios"
 ANKAIOS_RELEASE_TAG = "v${PV}"
 
 SRC_URI = "\
+    https://raw.githubusercontent.com/${ANKAIOS_GITHUB_REPO}/${ANKAIOS_RELEASE_TAG}/LICENSE;name=license;downloadfilename=LICENSE \
     file://state.yaml \
     file://ank-server.conf \
     file://ank-agent.conf \
@@ -16,12 +17,10 @@ SRC_URI = "\
     file://ank-agent.service \
     file://ank-server \
     file://ank-agent \
-    https://raw.githubusercontent.com/${ANKAIOS_GITHUB_REPO}/${ANKAIOS_RELEASE_TAG}/LICENSE;name=license;downloadfilename=LICENSE \
 "
 
 SRC_URI:append:qemux86-64 = " https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-amd64.tar.gz;name=bin-amd64"
-SRC_URI:append:raspberrypi4-64 = " https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-arm64.tar.gz;name=bin-arm64"
-SRC_URI:append:raspberrypi5 = " https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-arm64.tar.gz;name=bin-arm64"
+SRC_URI:append = " ${@' https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-arm64.tar.gz;name=bin-arm64' if d.getVar('MACHINE') in ('raspberrypi4-64', 'raspberrypi5') else ''}"
 
 SRC_URI[bin-amd64.sha256sum] = "26c3d122baf0cc952bfe37c7861f3f911ea2b8407771be29258beba5b3bc458e"
 SRC_URI[bin-arm64.sha256sum] = "19a3185c2e3c29f65f79a9b857745cd168db2f9030541b8408e2c8af3837a428"
@@ -35,26 +34,28 @@ S = "${UNPACKDIR}"
 # - ank-agent-bin: agent binary + agent config (+ systemd unit)
 # - ank-bin: CLI binary ("ank")
 # - ankaios-bin (${PN}): meta package pulling server+agent+cli
-PACKAGE_BEFORE_PN = "ank-server-bin ank-agent-bin ank-bin"
+PACKAGE_BEFORE_PN = "ank-agent-bin ank-bin ank-server-bin"
 
-FILES:${PN} = ""
 ALLOW_EMPTY:${PN} = "1"
-RDEPENDS:${PN} = "ank-server-bin ank-agent-bin ank-bin"
 
-FILES:ank-server-bin = " \
+FILES:ank-bin += "${bindir}/ank"
+
+FILES:ank-agent-bin += "\
+    ${bindir}/ank-agent \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-agent.service', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-agent', '', d)} \
+    ${sysconfdir}/ankaios/ank-agent.conf \
+"
+
+FILES:ank-server-bin += "\
     ${bindir}/ank-server \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-server.service', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-server', '', d)} \
     ${sysconfdir}/ankaios/state.yaml \
     ${sysconfdir}/ankaios/ank-server.conf \
 "
-FILES:ank-agent-bin = " \
-    ${bindir}/ank-agent \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-agent.service', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-agent', '', d)} \
-    ${sysconfdir}/ankaios/ank-agent.conf \
-"
-FILES:ank-bin = "${bindir}/ank"
+
+RDEPENDS:${PN} = "ank-agent-bin ank-bin ank-server-bin"
 
 CONFFILES:ank-server-bin = "${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
 CONFFILES:ank-agent-bin = "${sysconfdir}/ankaios/ank-agent.conf"

@@ -3,51 +3,55 @@ DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded L
 
 require ankaios-common.inc
 
-SRC_URI = "git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=release-1.0"
+# Build dependencies
+DEPENDS += "protobuf-native"
+
+SRC_URI = "\
+    git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=release-1.0 \
+    file://state.yaml \
+    file://ank-server.conf \
+    file://ank-agent.conf \
+    file://ank-server.service \
+    file://ank-agent.service \
+    file://ank-server \
+    file://ank-agent \
+"
+
 # v1.0.0 tag commit
 SRCREV = "6e5c3fcc700aaafce2bbab875466f8cb9ee22c79"
-
-SRC_URI += "file://state.yaml"
-SRC_URI += "file://ank-server.conf"
-SRC_URI += "file://ank-agent.conf"
-SRC_URI += "file://ank-server.service"
-SRC_URI += "file://ank-agent.service"
-SRC_URI += "file://ank-server"
-SRC_URI += "file://ank-agent"
 
 require ${BPN}-crates-${PV}.inc
 
 # Ankaios is written in Rust, using vendored dependencies
 inherit cargo cargo-update-recipe-crates systemd update-rc.d
 
-# Build dependencies
-DEPENDS += "protobuf-native"
-
 # Package split:
 # - ank-server: server binary + server config + systemd unit
 # - ank-agent: agent binary + agent config + systemd unit
 # - ank: CLI binary ("ank")
 # - ankaios (${PN}): meta package pulling server+agent+cli
-PACKAGE_BEFORE_PN = "ank-server ank-agent ank"
+PACKAGE_BEFORE_PN = "ank ank-agent ank-server"
 
-FILES:${PN} = ""
 ALLOW_EMPTY:${PN} = "1"
-RDEPENDS:${PN} = "ank-server ank-agent ank"
 
-FILES:ank-server = " \
+FILES:ank += "${bindir}/ank"
+
+FILES:ank-agent += "\
+    ${bindir}/ank-agent \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-agent.service', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-agent', '', d)} \
+    ${sysconfdir}/ankaios/ank-agent.conf \
+"
+
+FILES:ank-server += "\
     ${bindir}/ank-server \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-server.service', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-server', '', d)} \
     ${sysconfdir}/ankaios/state.yaml \
     ${sysconfdir}/ankaios/ank-server.conf \
 "
-FILES:ank-agent = " \
-    ${bindir}/ank-agent \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-agent.service', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-agent', '', d)} \
-    ${sysconfdir}/ankaios/ank-agent.conf \
-"
-FILES:ank = "${bindir}/ank"
+
+RDEPENDS:${PN} = "ank ank-agent ank-server"
 
 CONFFILES:ank-server = "${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
 CONFFILES:ank-agent = "${sysconfdir}/ankaios/ank-agent.conf"
