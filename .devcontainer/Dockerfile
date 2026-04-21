@@ -46,6 +46,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     fuse-overlayfs \
     slirp4netns
 
+# bitbake recipe linter
+RUN PIP_BREAK_SYSTEM_PACKAGES=1 pip install oelint_adv
+
 # User management
 RUN (userdel -r ubuntu || true) \
     && groupadd rustlang \
