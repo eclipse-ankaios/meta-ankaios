@@ -12,33 +12,40 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-build-sysvinit-minimal-qemu:
+bitbake-setup-init:
+	./scripts/bitbake-setup-init.sh
+
+build-sysvinit-minimal-qemu: bitbake-setup-init
 	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/qemux86-64
 	bash -c '. bitbake-builds/ankaios-sysvinit-qemux86-64/build/init-build-env && bitbake core-image-minimal'
 
 run-sysvinit-minimal-qemu: build-sysvinit-minimal-qemu
 	bash -c '. bitbake-builds/ankaios-sysvinit-qemux86-64/build/init-build-env && runqemu snapshot nographic slirp'
 
-build-sysvinit-minimal-rpi4:
+build-sysvinit-minimal-rpi4: bitbake-setup-init
 	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/raspberrypi4-64
 	bash -c '. bitbake-builds/ankaios-sysvinit-raspberrypi4-64/build/init-build-env && bitbake core-image-minimal'
 
-build-sysvinit-minimal-rpi5:
+build-sysvinit-full-rpi4: bitbake-setup-init
+	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/raspberrypi4-64
+	bash -c '. bitbake-builds/ankaios-sysvinit-raspberrypi4-64/build/init-build-env && bitbake core-image-full-cmdline'
+
+build-sysvinit-minimal-rpi5: bitbake-setup-init
 	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/raspberrypi5
 	bash -c '. bitbake-builds/ankaios-sysvinit-raspberrypi5/build/init-build-env && bitbake core-image-minimal'
 
-build-systemd-full-qemu:
+build-systemd-full-qemu: bitbake-setup-init
 	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-systemd machine/qemux86-64
 	bash -c '. bitbake-builds/ankaios-systemd-qemux86-64/build/init-build-env && bitbake core-image-full-cmdline'
 
 run-systemd-full-qemu: build-systemd-full-qemu
 	bash -c '. bitbake-builds/ankaios-systemd-qemux86-64/build/init-build-env && runqemu snapshot nographic slirp'
 
-build-systemd-full-rpi4:
+build-systemd-full-rpi4: bitbake-setup-init
 	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-systemd machine/raspberrypi4-64
 	bash -c '. bitbake-builds/ankaios-systemd-raspberrypi4-64/build/init-build-env && bitbake core-image-full-cmdline'
 
-build-systemd-full-rpi5:
+build-systemd-full-rpi5: bitbake-setup-init
 	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-systemd machine/raspberrypi5
 	bash -c '. bitbake-builds/ankaios-systemd-raspberrypi5/build/init-build-env && bitbake core-image-full-cmdline'
 

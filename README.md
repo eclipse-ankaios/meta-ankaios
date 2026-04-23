@@ -74,6 +74,10 @@ You can start the Ankaios server and agent in the background and pipe the logs t
 
 ### Building with bitbake-setup
 
+For convenience, there are also just commands that handle the most common bitbake-setup configs and also call the bitbake-setup-init. Looks at the available just command for more information.
+
+`just --list`
+
 As an alternative to `kas`, this repository also includes a `bitbake-setup` profile - [bitbake-setup-ankaios.conf.json](bitbake-setup-ankaios.conf.json). The `bitbake-setup` executable is provided by the bitbake repo which is not included in the current devcontainer. If you first run `kas`, `bitbake` will already be available in the expected location, but if you skip this and directly want to use `bitbake-setup`, you will have to prepare the environment first (currently just check out the bitbake repo). To do so, just run once the following script:
 
 `./scripts/bitbake-setup-init.sh`
@@ -94,7 +98,7 @@ and the supported machine targets:
 * `machine/raspberrypi5`
 
 For Raspberry Pi machine targets (`raspberrypi4-64` and `raspberrypi5`), the image includes
-`ankaios-rpi-rootfs-resize`, which expands the root partition and filesystem on first boot
+`rootfs-resize`, which expands the root partition and filesystem on first boot
 to use the full SD card capacity.
 
 After the setup is complete, source the environment with:

@@ -96,3 +96,7 @@ local_conf_header:
     # Required for raspberry pi as not included per default
     IMAGE_INSTALL:append:raspberrypi4-64 = " kernel-module-bridge"
     IMAGE_INSTALL:append:raspberrypi5 = " kernel-module-bridge"
+    # WiFi support for raspberry pi
+    LICENSE_FLAGS_ACCEPTED:append = " synaptics-killswitch"
+    IMAGE_INSTALL:append:raspberrypi4-64 = " wireless-regdb-static linux-firmware-rpidistro-bcm43455 wpa-supplicant kernel-module-brcmfmac kernel-module-brcmfmac-wcc"
+    IMAGE_INSTALL:append:raspberrypi5 = " wireless-regdb-static linux-firmware-rpidistro-bcm43455 wpa-supplicant kernel-module-brcmfmac kernel-module-brcmfmac-wcc"
