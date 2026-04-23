@@ -14,9 +14,9 @@ S = "${UNPACKDIR}"
 
 FILES:${PN} += "\
     ${datadir}/udhcpc/dns-only \
-    ${sbindir}/ankaios-rpi-rootfs-resize \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ankaios-rpi-rootfs-resize', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_unitdir}/system/ankaios-rpi-rootfs-resize.service', '', d)} \
+    ${sbindir}/rootfs-resize \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/rootfs-resize', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_unitdir}/system/rootfs-resize.service', '', d)} \
 "
 
 INITSCRIPT_NAME = "init-cgroup-dhcp"
