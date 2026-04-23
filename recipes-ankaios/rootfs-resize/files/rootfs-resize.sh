@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-MARKER="/var/lib/ankaios-rpi-rootfs-resize.done"
+MARKER="/var/lib/rootfs-resize.done"
 
 mkdir -p /var/lib
 if [ -e "$MARKER" ]; then
@@ -25,7 +25,7 @@ if [ "$ROOT_DEV" = "/dev/root" ] || [ -z "$ROOT_DEV" ]; then
 fi
 
 if [ -z "$ROOT_DEV" ] || [ ! -b "$ROOT_DEV" ]; then
-    echo "ankaios-rpi-rootfs-resize: unable to resolve root block device" >&2
+    echo "rootfs-resize: unable to resolve root block device" >&2
     exit 1
 fi
 
@@ -40,13 +40,13 @@ case "$base" in
         DISK_DEV="/dev/${base%${PART_NUM}}"
         ;;
     *)
-        echo "ankaios-rpi-rootfs-resize: unsupported root device format: $ROOT_DEV" >&2
+        echo "rootfs-resize: unsupported root device format: $ROOT_DEV" >&2
         exit 1
         ;;
 esac
 
 if [ ! -b "$DISK_DEV" ] || [ -z "$PART_NUM" ]; then
-    echo "ankaios-rpi-rootfs-resize: invalid disk/partition derived from $ROOT_DEV" >&2
+    echo "rootfs-resize: invalid disk/partition derived from $ROOT_DEV" >&2
     exit 1
 fi
 
