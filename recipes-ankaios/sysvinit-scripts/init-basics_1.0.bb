@@ -12,15 +12,10 @@ SRC_URI = "file://init-cgroup-dhcp \
 
 S = "${UNPACKDIR}"
 
-FILES:${PN} += "\
-    ${datadir}/udhcpc/dns-only \
-    ${sbindir}/rootfs-resize \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/rootfs-resize', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_unitdir}/system/rootfs-resize.service', '', d)} \
-"
-
 INITSCRIPT_NAME = "init-cgroup-dhcp"
 INITSCRIPT_PARAMS = "start 40 2 3 4 5 . stop 60 0 1 6 ."
+
+FILES:${PN} += "${datadir}/udhcpc/dns-only"
 
 do_install:append() {
     install -d ${D}${sysconfdir}/init.d
