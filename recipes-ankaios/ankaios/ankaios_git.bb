@@ -1,36 +1,43 @@
-# Recipe for Eclipse Ankaios v0.6.0 with vendored dependencies
-
-require ankaios-common.inc
-
 SUMMARY = "Eclipse Ankaios: Lightweight container orchestrator for embedded Linux"
-DESCRIPTION = "Eclipse Ankaios is a lightweight container orchestrator for embedded Linux systems. This recipe uses the official vendored source archive."
+DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded Linux systems. This recipe builds Ankaios from source using vendored Rust crates."
+HOMEPAGE = "https://eclipse-ankaios.github.io/ankaios/latest/"
+BUGTRACKER = "https://github.com/eclipse-ankaios/ankaios/issues"
+
+SECTION = "base"
+
+CVE_PRODUCT = "eclipse:ankaios"
+
+LICENSE = "Apache-2.0"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 # Build dependencies
 DEPENDS += "protobuf-native"
 
+PV = "1.0.0"
+
 SRC_URI = "\
-    git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=main \
+    git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=release-1.0 \
     file://state.yaml \
     file://ank-server.conf \
     file://ank-agent.conf \
     file://ank-server.service \
     file://ank-agent.service \
-    file://ank-server \
-    file://ank-agent \
+    file://ank-server;subdir=init-scripts \
+    file://ank-agent;subdir=init-scripts \
 "
 
-# v0.6.0 tag commit
-SRCREV = "58b26c026cebf54207a6dae7e52df29648065dd7"
+# v1.0.0 tag commit
+SRCREV = "6e5c3fcc700aaafce2bbab875466f8cb9ee22c79"
 
-require ${BPN}-crates-${PV}.inc
+require ${BPN}-crates.inc
 
-# Ankaios is written in Rust, using vendored dependencies
-inherit cargo cargo-update-recipe-crates systemd update-rc.d
+# Add "cargo-update-recipe-crates" to generate the crates.inc file automatically
+inherit cargo systemd update-rc.d
 
 # Package split:
+# - ank-server: server binary + server config + systemd unit
+# - ank-agent: agent binary + agent config + systemd unit
 # - ank: CLI binary ("ank")
-# - ank-agent: agent binary + agent config + service/init script
-# - ank-server: server binary + server config + service/init script
 # - ankaios (${PN}): meta package pulling server+agent+cli
 PACKAGE_BEFORE_PN = "ank ank-agent ank-server"
 
@@ -58,6 +65,7 @@ RDEPENDS:${PN} = "ank ank-agent ank-server"
 CONFFILES:ank-server = "${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
 CONFFILES:ank-agent = "${sysconfdir}/ankaios/ank-agent.conf"
 
+# Install/enable systemd units when systemd is enabled
 SYSTEMD_PACKAGES = "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'ank-server ank-agent', '', d)}"
 SYSTEMD_SERVICE:ank-server = "ank-server.service"
 SYSTEMD_SERVICE:ank-agent = "ank-agent.service"
@@ -90,8 +98,8 @@ do_install() {
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', 'true', 'false', d)}; then
         install -d ${D}${sysconfdir}/init.d
-        install -m 0755 ${UNPACKDIR}/ank-server ${D}${sysconfdir}/init.d/ank-server
-        install -m 0755 ${UNPACKDIR}/ank-agent ${D}${sysconfdir}/init.d/ank-agent
+        install -m 0755 ${UNPACKDIR}/init-scripts/ank-server ${D}${sysconfdir}/init.d/ank-server
+        install -m 0755 ${UNPACKDIR}/init-scripts/ank-agent ${D}${sysconfdir}/init.d/ank-agent
     fi
 
 }

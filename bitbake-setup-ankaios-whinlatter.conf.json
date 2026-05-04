@@ -1,6 +1,6 @@
 {
     "version": "1.0",
-    "description": "Ankaios bitbake-setup profiles for sysvinit and systemd runtime configurations",
+    "description": "Ankaios bitbake-setup profiles for Yocto 5.3 Whinlatter",
     "sources": {
         "bitbake": {
             "git-remote": {
@@ -102,16 +102,16 @@
                 "configurations": [
                     {
                         "name": "ankaios-sysvinit",
-                        "description": "Poky distribution with Ankaios and SysVinit",
-                        "setup-dir-name": "ankaios-sysvinit-$machine",
+                        "description": "Poky distribution with Ankaios and SysVinit on Whinlatter",
+                        "setup-dir-name": "ankaios-sysvinit-whinlatter-$machine",
                         "oe-fragments": [
                             "meta-ankaios/ankaios/minimal-sysvinit"
                         ]
                     },
                     {
                         "name": "ankaios-systemd",
-                        "description": "Poky distribution with Ankaios and systemd",
-                        "setup-dir-name": "ankaios-systemd-$machine",
+                        "description": "Poky distribution with Ankaios and systemd on Whinlatter",
+                        "setup-dir-name": "ankaios-systemd-whinlatter-$machine",
                         "oe-fragments": [
                             "meta-ankaios/ankaios/full-systemd"
                         ]
