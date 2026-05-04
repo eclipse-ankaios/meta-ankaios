@@ -90,27 +90,23 @@ local_conf_header:
 
     # Add podman to the image
     IMAGE_INSTALL:append = " podman"
-    
+
     # Kirkstone-specific: enable nftables backend for iptables so that CNI portmap
     # options (--set-xmark, --to-destination, addrtype) work correctly.
     # The legacy xtables-legacy-multi binary does not support these options.
     PACKAGECONFIG:append:pn-iptables = " libnftnl"
-    KERNEL_MODULE_AUTOLOAD:append = " nf_tables nft_compat nft_chain_nat nft_counter nft_ct"
     IMAGE_INSTALL:append = " kernel-module-nf-tables kernel-module-nft-compat \
         kernel-module-nft-nat \
         kernel-module-nft-chain-nat \
         kernel-module-nft-masq \
         kernel-module-nft-counter \
         kernel-module-nft-ct \
-        kernel-module-nft-reject \
-        kernel-module-nft-log \
         kernel-module-nf-nat \
         kernel-module-nf-conntrack \
         kernel-module-nf-defrag-ipv4 \
         kernel-module-xt-mark \
         kernel-module-xt-addrtype \
-        kernel-module-xt-nat \
-        kernel-module-xt-redirect"
+        kernel-module-xt-nat"
 
     IMAGE_INSTALL:append = " kernel-module-xt-multiport"
     # Required for raspberry pi as not included per default
