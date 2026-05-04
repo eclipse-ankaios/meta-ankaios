@@ -1,0 +1,103 @@
+header:
+  version: 14
+
+machine: qemux86-64
+distro: poky
+
+repos:
+  meta-ankaios:
+
+  bitbake:
+    url: "https://git.openembedded.org/bitbake"
+    branch: "2.18"
+    path: layers/wrynose/bitbake
+    layers: {}
+
+  openembedded-core:
+    url: "https://git.openembedded.org/openembedded-core"
+    branch: wrynose
+    layers:
+      meta:
+    path: layers/wrynose/openembedded-core
+
+  meta-yocto:
+    url: "https://git.yoctoproject.org/meta-yocto"
+    branch: wrynose
+    layers:
+      meta-poky:
+    path: layers/wrynose/meta-yocto
+
+  meta-openembedded:
+    url: "https://git.openembedded.org/meta-openembedded"
+    branch: wrynose
+    layers:
+      meta-oe:
+      meta-python:
+      meta-networking:
+      meta-filesystems:
+    path: layers/wrynose/meta-openembedded
+
+  meta-virtualization:
+    url: "https://git.yoctoproject.org/meta-virtualization"
+    branch: master
+    path: layers/wrynose/meta-virtualization
+
+bblayers_conf_header:
+  meta-ankaios-common: |
+    POKY_BBLAYERS_CONF_VERSION = "2"
+    BBPATH = "${TOPDIR}"
+    BBFILES ?= ""
+
+local_conf_header:
+  meta-ankaios-common: |
+    CONF_VERSION = "2"
+    EXTRA_IMAGE_FEATURES ?= "allow-empty-password empty-root-password allow-root-login"
+    USER_CLASSES ?= "buildstats"
+    PATCHRESOLVE = "noop"
+
+    # Shared cache directories across all Ankaios build directories
+    DL_DIR = "/workspace/bitbake-shared-cache/downloads"
+    SSTATE_DIR = "/workspace/bitbake-shared-cache/sstate-cache"
+    BB_HASHSERVE_DB_DIR = "${SSTATE_DIR}"
+
+    BB_DISKMON_DIRS ??= "\
+        STOPTASKS,${TMPDIR},1G,100K \
+        STOPTASKS,${DL_DIR},1G,100K \
+        STOPTASKS,${SSTATE_DIR},1G,100K \
+        STOPTASKS,/tmp,100M,100K \
+        HALT,${TMPDIR},100M,1K \
+        HALT,${DL_DIR},100M,1K \
+        HALT,${SSTATE_DIR},100M,1K \
+        HALT,/tmp,10M,1K"
+
+    # Yocto Project SState Mirror
+    BB_HASHSERVE_UPSTREAM = 'wss://hashserv.yoctoproject.org/ws'
+    SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
+    # Enable reuse of sstate by detecting when a given sstate artifact can be reused as equivalent
+    BB_HASHSERVE = "auto"
+    BB_SIGNATURE_HANDLER = "OEEquivHash"
+
+    # No SDL (Simple DirectMedia Layer) support required for the minimal image
+    # PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
+
+    # Build an uncompressed image. Run with snapshot to discard changes after running.
+    IMAGE_FSTYPES:remove = " ext4.zst"
+    IMAGE_FSTYPES:append = " ext4"
+    QB_DEFAULT_FSTYPE = "ext4"
+
+    DISTRO_FEATURES:append = " virtualization"
+
+    # Add additional common tools
+    IMAGE_INSTALL:append = " curl"
+
+    # Add podman to the image
+    IMAGE_INSTALL:append = " podman"
+    # Required for the podman CNI portmap networking
+    IMAGE_INSTALL:append = " kernel-module-xt-multiport"
+    # Required for raspberry pi as not included per default
+    IMAGE_INSTALL:append:raspberrypi4-64 = " kernel-module-bridge"
+    IMAGE_INSTALL:append:raspberrypi5 = " kernel-module-bridge"
+    # WiFi support for raspberry pi
+    LICENSE_FLAGS_ACCEPTED:append = " synaptics-killswitch"
+    IMAGE_INSTALL:append:raspberrypi4-64 = " wireless-regdb-static linux-firmware-rpidistro-bcm43455 wpa-supplicant kernel-module-brcmfmac kernel-module-brcmfmac-wcc"
+    IMAGE_INSTALL:append:raspberrypi5 = " wireless-regdb-static linux-firmware-rpidistro-bcm43455 wpa-supplicant kernel-module-brcmfmac kernel-module-brcmfmac-wcc"

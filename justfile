@@ -12,42 +12,59 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-bitbake-setup-init:
-	./scripts/bitbake-setup-init.sh
+RELEASE := "wrynose"
+BITBAKE_SETUP_CONFIG := "./bitbake-setup-ankaios-" + RELEASE + ".conf.json"
 
-build-sysvinit-minimal-qemu: bitbake-setup-init
-	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/qemux86-64
-	bash -c '. bitbake-builds/ankaios-sysvinit-qemux86-64/build/init-build-env && bitbake core-image-minimal'
+bitbake-setup-repo:
+	./scripts/bitbake-setup-repo.sh
 
+# Run init or update depending on whether the setup directory already exists
+[private]
+bitbake-setup-init-or-update runtime machine:
+	#!/usr/bin/env bash
+	set -euo pipefail
+	setup_dir="bitbake-builds/ankaios-{{runtime}}-{{RELEASE}}-{{machine}}"
+	if [[ -d "${setup_dir}/layers" ]]; then
+		bitbake-setup update --setup-dir "${setup_dir}"
+	else
+		bitbake-setup init --non-interactive {{BITBAKE_SETUP_CONFIG}} ankaios-{{runtime}} machine/{{machine}}
+	fi
+
+# Build wrynose minimal sysvinit image for QEMU (override with RELEASE=whinlatter)
+build-sysvinit-minimal-qemu: bitbake-setup-repo (bitbake-setup-init-or-update "sysvinit" "qemux86-64")
+	bash -c '. bitbake-builds/ankaios-sysvinit-{{RELEASE}}-qemux86-64/build/init-build-env && bitbake core-image-minimal'
+
+# Build and run wrynose minimal sysvinit image in QEMU (override with RELEASE=whinlatter)
 run-sysvinit-minimal-qemu: build-sysvinit-minimal-qemu
-	bash -c '. bitbake-builds/ankaios-sysvinit-qemux86-64/build/init-build-env && runqemu snapshot nographic slirp'
+	bash -c '. bitbake-builds/ankaios-sysvinit-{{RELEASE}}-qemux86-64/build/init-build-env && runqemu snapshot nographic slirp'
 
-build-sysvinit-minimal-rpi4: bitbake-setup-init
-	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/raspberrypi4-64
-	bash -c '. bitbake-builds/ankaios-sysvinit-raspberrypi4-64/build/init-build-env && bitbake core-image-minimal'
+# Build wrynose full-cmdline systemd image for QEMU (override with RELEASE=whinlatter)
+build-systemd-full-qemu: bitbake-setup-repo (bitbake-setup-init-or-update "systemd" "qemux86-64")
+	bash -c '. bitbake-builds/ankaios-systemd-{{RELEASE}}-qemux86-64/build/init-build-env && bitbake core-image-full-cmdline'
 
-build-sysvinit-full-rpi4: bitbake-setup-init
-	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/raspberrypi4-64
-	bash -c '. bitbake-builds/ankaios-sysvinit-raspberrypi4-64/build/init-build-env && bitbake core-image-full-cmdline'
-
-build-sysvinit-minimal-rpi5: bitbake-setup-init
-	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/raspberrypi5
-	bash -c '. bitbake-builds/ankaios-sysvinit-raspberrypi5/build/init-build-env && bitbake core-image-minimal'
-
-build-systemd-full-qemu: bitbake-setup-init
-	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-systemd machine/qemux86-64
-	bash -c '. bitbake-builds/ankaios-systemd-qemux86-64/build/init-build-env && bitbake core-image-full-cmdline'
-
+# Build and run wrynose full-cmdline systemd image in QEMU (override with RELEASE=whinlatter)
 run-systemd-full-qemu: build-systemd-full-qemu
-	bash -c '. bitbake-builds/ankaios-systemd-qemux86-64/build/init-build-env && runqemu snapshot nographic slirp'
+	bash -c '. bitbake-builds/ankaios-systemd-{{RELEASE}}-qemux86-64/build/init-build-env && runqemu snapshot nographic slirp'
 
-build-systemd-full-rpi4: bitbake-setup-init
-	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-systemd machine/raspberrypi4-64
-	bash -c '. bitbake-builds/ankaios-systemd-raspberrypi4-64/build/init-build-env && bitbake core-image-full-cmdline'
+# Build wrynose minimal sysvinit image for Raspberry Pi 4 (override with RELEASE=whinlatter)
+build-sysvinit-minimal-rpi4: bitbake-setup-repo (bitbake-setup-init-or-update "sysvinit" "raspberrypi4-64")
+	bash -c '. bitbake-builds/ankaios-sysvinit-{{RELEASE}}-raspberrypi4-64/build/init-build-env && bitbake core-image-minimal'
 
-build-systemd-full-rpi5: bitbake-setup-init
-	bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-systemd machine/raspberrypi5
-	bash -c '. bitbake-builds/ankaios-systemd-raspberrypi5/build/init-build-env && bitbake core-image-full-cmdline'
+# Build wrynose full-cmdline sysvinit image for Raspberry Pi 4 (override with RELEASE=whinlatter)
+build-sysvinit-full-rpi4: bitbake-setup-repo (bitbake-setup-init-or-update "sysvinit" "raspberrypi4-64")
+	bash -c '. bitbake-builds/ankaios-sysvinit-{{RELEASE}}-raspberrypi4-64/build/init-build-env && bitbake core-image-full-cmdline'
+
+# Build wrynose full-cmdline systemd image for Raspberry Pi 4 (override with RELEASE=whinlatter)
+build-systemd-full-rpi4: bitbake-setup-repo (bitbake-setup-init-or-update "systemd" "raspberrypi4-64")
+	bash -c '. bitbake-builds/ankaios-systemd-{{RELEASE}}-raspberrypi4-64/build/init-build-env && bitbake core-image-full-cmdline'
+
+# Build wrynose minimal sysvinit image for Raspberry Pi 5 (override with RELEASE=whinlatter)
+build-sysvinit-minimal-rpi5: bitbake-setup-repo (bitbake-setup-init-or-update "sysvinit" "raspberrypi5")
+	bash -c '. bitbake-builds/ankaios-sysvinit-{{RELEASE}}-raspberrypi5/build/init-build-env && bitbake core-image-minimal'
+
+# Build wrynose full-cmdline systemd image for Raspberry Pi 5 (override with RELEASE=whinlatter)
+build-systemd-full-rpi5: bitbake-setup-repo (bitbake-setup-init-or-update "systemd" "raspberrypi5")
+	bash -c '. bitbake-builds/ankaios-systemd-{{RELEASE}}-raspberrypi5/build/init-build-env && bitbake core-image-full-cmdline'
 
 lint:
 	@set -eu; \

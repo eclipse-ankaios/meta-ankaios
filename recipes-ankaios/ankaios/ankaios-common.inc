@@ -1,7 +1,0 @@
-HOMEPAGE = "https://eclipse-ankaios.github.io/ankaios/latest/"
-BUGTRACKER = "https://github.com/eclipse-ankaios/ankaios/issues"
-SECTION = "base"
-CVE_PRODUCT = "eclipse:ankaios"
-LICENSE = "Apache-2.0"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
-BBCLASSEXTEND = ""

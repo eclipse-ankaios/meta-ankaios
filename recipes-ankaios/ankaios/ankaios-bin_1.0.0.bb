@@ -1,7 +1,14 @@
-require ankaios-common.inc
-
 SUMMARY = "Eclipse Ankaios: Lightweight container orchestrator for embedded Linux"
 DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded Linux systems. This recipe installs the official prebuilt release binaries."
+HOMEPAGE = "https://eclipse-ankaios.github.io/ankaios/latest/"
+BUGTRACKER = "https://github.com/eclipse-ankaios/ankaios/issues"
+
+SECTION = "base"
+
+CVE_PRODUCT = "eclipse:ankaios"
+
+LICENSE = "Apache-2.0"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 inherit systemd update-rc.d
 
@@ -15,8 +22,8 @@ SRC_URI = "\
     file://ank-agent.conf \
     file://ank-server.service \
     file://ank-agent.service \
-    file://ank-server \
-    file://ank-agent \
+    file://ank-server;subdir=init-scripts \
+    file://ank-agent;subdir=init-scripts \
 "
 
 SRC_URI:append:qemux86-64 = " https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-amd64.tar.gz;name=bin-amd64"
@@ -26,7 +33,7 @@ SRC_URI[bin-amd64.sha256sum] = "26c3d122baf0cc952bfe37c7861f3f911ea2b8407771be29
 SRC_URI[bin-arm64.sha256sum] = "19a3185c2e3c29f65f79a9b857745cd168db2f9030541b8408e2c8af3837a428"
 SRC_URI[license.sha256sum] = "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
 
-# The binaries are only unpacked
+# The binaries are only unpacked into UNPACKDIR
 S = "${UNPACKDIR}"
 
 # Package split:
@@ -93,7 +100,7 @@ do_install() {
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', 'true', 'false', d)}; then
         install -d ${D}${sysconfdir}/init.d
-        install -m 0755 ${UNPACKDIR}/ank-server ${D}${sysconfdir}/init.d/ank-server
-        install -m 0755 ${UNPACKDIR}/ank-agent ${D}${sysconfdir}/init.d/ank-agent
+        install -m 0755 ${UNPACKDIR}/init-scripts/ank-server ${D}${sysconfdir}/init.d/ank-server
+        install -m 0755 ${UNPACKDIR}/init-scripts/ank-agent ${D}${sysconfdir}/init.d/ank-agent
     fi
 }

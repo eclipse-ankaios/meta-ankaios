@@ -1,8 +1,12 @@
 # Yocto Metadata layer for Eclipse Ankaios
 
-This repo contains a Yocto metadata layer for Eclipse Ankaios.
+This repo contains a [Yocto metadata layer](recipes-ankaios/ankaios) for [Eclipse Ankaios](https://github.com/eclipse-ankaios/ankaios).
 
-It is based on Yocto 5.3 "Whinlatter" and Ankaios v1.
+The bin recipe installs from the binaries released on GitHub and supports all Yocto releases starting from 4.0 "Kirkstone". It was explicitly tested with 6.0 "Wrynose", 5.3 "Whinlatter", and 4.0 "Kirkstone".
+
+The git recipe builds from source and requires at least 5.3 "Whinlatter" because of the required Rust version (>= 1.90).
+
+Additionally the repo contains [`kas`](https://github.com/siemens/kas) and `bitbake-setup` example configurations to build images that include Ankaios.
 
 ## Preconditions
 
@@ -26,65 +30,63 @@ If you add additional builds, please ensure to use the cache in order to avoid s
 
 The dev container already has all required tools installed so the build can be easily started in it.
 
-The repo contains two kas build configs:
+The repo contains six kas build configs, split by Yocto release:
 
-* [kas-full-cmd-systemd.yml](kas-full-cmd-systemd.yml) - building a core-image-full-cmdline with systemd as init manager and automatic ankaios start via systemd units
-* [kas-minimal-sysvinit.yml](kas-minimal-sysvinit.yml) - building a core-image-minimal with sysvinit
+* [kas-full-cmd-systemd-whinlatter.yml](kas-full-cmd-systemd-whinlatter.yml) - building a core-image-full-cmdline with systemd on Yocto 5.3 "Whinlatter"
+* [kas-minimal-sysvinit-whinlatter.yml](kas-minimal-sysvinit-whinlatter.yml) - building a core-image-minimal with sysvinit on Yocto 5.3 "Whinlatter"
+* [kas-full-cmd-systemd-wrynose.yml](kas-full-cmd-systemd-wrynose.yml) - building a core-image-full-cmdline with systemd on Yocto 6.0 "Wrynose"
+* [kas-minimal-sysvinit-wrynose.yml](kas-minimal-sysvinit-wrynose.yml) - building a core-image-minimal with sysvinit on Yocto 6.0 "Wrynose"
+* [kas-full-cmd-systemd-kirkstone.yml](kas-full-cmd-systemd-kirkstone.yml) - building a core-image-full-cmdline with systemd on Yocto 4.0 "Kirkstone"
+* [kas-minimal-sysvinit-kirkstone.yml](kas-minimal-sysvinit-kirkstone.yml) - building a core-image-minimal with sysvinit on Yocto 4.0 "Kirkstone"
 
-Both images can run Ankaios and start containers with Podman.
+All images run Ankaios and start containers with Podman.
 
-For details on building and running them see the next two sections.
+For details on building and running them see the next six sections.
 
-#### Building a full-cmdline image with systemd
-
-This configuration builds a full cmdline image with systemd as init manager. To start the build just run:
+The following examples shows how to build a minimal Yocto 6.0 "Wrynose" image with sysvinit as init manager:
 
 ```shell
-kas build kas-full-cmd-systemd.yml
+kas build kas-minimal-sysvinit-wrynose.yml
 ```
 
 Afterwards you can start a kas shell and run the image with qemu and login with user `root` (no password):
 
 ```shell
 # First start the shell
-kas shell kas-full-cmd-systemd.yml
+kas shell kas-minimal-sysvinit-wrynose.yml
 # And in the shell run qemu
 runqemu snapshot nographic slirp
 ```
 
-#### Building a minimal image with sysvinit as init manager
-
-To build the minimal image with the SysVinit init manager run:
-
-```shell
-kas build kas-minimal-sysvinit.yml
-```
-
-Afterwards you can start a kas shell and run the image with qemu and login with user `root` (no password):
-
-```shell
-# First start the shell
-kas shell kas-minimal-sysvinit.yml
-# And in the shell run qemu
-runqemu snapshot nographic slirp
-```
-
-This image does not provide tmux because of missing locales and tools in the minimal image.
-You can start the Ankaios server and agent in the background and pipe the logs to appropriate files.
+To build an image with the other 5 options, just use the desired config file.
 
 ### Building with bitbake-setup
 
-For convenience, there are also just commands that handle the most common bitbake-setup configs and also call the bitbake-setup-init. Looks at the available just command for more information.
+This section provides information on building an image with bitbake setup.
 
-`just --list`
 
-As an alternative to `kas`, this repository also includes a `bitbake-setup` profile - [bitbake-setup-ankaios.conf.json](bitbake-setup-ankaios.conf.json). The `bitbake-setup` executable is provided by the bitbake repo which is not included in the current devcontainer. If you first run `kas`, `bitbake` will already be available in the expected location, but if you skip this and directly want to use `bitbake-setup`, you will have to prepare the environment first (currently just check out the bitbake repo). To do so, just run once the following script:
+> [!TIP]
+> There are also just commands that handle the most common bitbake-setup configs. Run `just --list` to see them.
 
-`./scripts/bitbake-setup-init.sh`
+As an alternative to `kas`, this repository also includes two release-specific `bitbake-setup` profiles:
 
-Afterwards (or if bitbake was already available) continue with the setup init:
+* [bitbake-setup-ankaios-whinlatter.conf.json](bitbake-setup-ankaios-whinlatter.conf.json)
+* [bitbake-setup-ankaios-wrynose.conf.json](bitbake-setup-ankaios-wrynose.conf.json)
 
-`bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json <runtime-oriented config> <machine target>`
+Kirkstone is not supported by `bitbake-setup` because that tool was introduced after Yocto 4.0. The `bitbake-setup` executable is provided by the bitbake repo which is not included in the current devcontainer. To get the repo in order to prepare the environment, just run once the following script:
+
+`./scripts/bitbake-setup-repo.sh`
+
+Afterwards (or if bitbake-setup was already available) continue with the setup init:
+
+`bitbake-setup init --non-interactive ./bitbake-setup-ankaios-whinlatter.conf.json <runtime-oriented config> <machine target>`
+
+For Wrynose, use `./bitbake-setup-ankaios-wrynose.conf.json` instead.
+
+> [!NOTE]
+> The `just` targets use Wrynose by default and can be switched to Whinlatter via:
+>
+> `just RELEASE=whinlatter <target>`
 
 The supported runtime-oriented configurations are:
 
@@ -103,26 +105,26 @@ to use the full SD card capacity.
 
 After the setup is complete, source the environment with:
 
-`. bitbake-builds/<runtime-oriented config>-<machine target>/build/init-build-env`
+`. bitbake-builds/<runtime-oriented config>-<release>-<machine target>/build/init-build-env`
 
-Note that after sourcing the config, the environment is set for exactly this runtime-oriented config and machine target. Use another shell or source another environment to change this.
+Note that after sourcing the config, the environment is set for exactly this runtime-oriented config, release, and machine target. Use another shell or source another environment to change this.
 
-Select an  image target.
-Following targets are tested, but others would probably work too:
+To build the image, trigger the `bitbake` command with the preferred target:
+
+`bitbake <image-target>`
+
+where the image target can be one of the following (other targets would probably work too, but these are tested):
 
 * `core-image-minimal`
 * `core-image-full-cmdline`
 
-And trigger the `bitbake` build with the desired image target:
-
-`bitbake <image-target>`
 After the build is complete, run QEMU from the same shell with:
 
 ```shell
 runqemu snapshot nographic slirp
 ```
 
-The following two examples show how to build the images that correspond to the `kas` builds, but you can also mix and match with different configs. For example, you can try to build a full-cmdline image with SysVinit for RaspberryPi4.
+The following two examples show how to build a minimal image with SysVinit and a full-cmdline image with Systemd, but you can also mix and match with different configs. For example, you can try to build a full-cmdline image with SysVinit for RaspberryPi4.
 
 #### Bitbake-setup for a minimal image with SysVinit
 
@@ -131,8 +133,8 @@ Run `./scripts/bitbake-setup-init.sh` if bitbake is not available yet.
 For a minimal image with a SysV init configuration for `qemux86-64`:
 
 ```shell
-bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-sysvinit machine/qemux86-64
-. bitbake-builds/ankaios-sysvinit-qemux86-64/build/init-build-env
+bitbake-setup init --non-interactive ./bitbake-setup-ankaios-whinlatter.conf.json ankaios-sysvinit machine/qemux86-64
+. bitbake-builds/ankaios-sysvinit-whinlatter-qemux86-64/build/init-build-env
 bitbake core-image-minimal
 ```
 
@@ -141,8 +143,8 @@ bitbake core-image-minimal
 Systemd configuration example:
 
 ```shell
-bitbake-setup init --non-interactive ./bitbake-setup-ankaios.conf.json ankaios-systemd machine/qemux86-64
-. bitbake-builds/ankaios-systemd-qemux86-64/build/init-build-env
+bitbake-setup init --non-interactive ./bitbake-setup-ankaios-whinlatter.conf.json ankaios-systemd machine/qemux86-64
+. bitbake-builds/ankaios-systemd-whinlatter-qemux86-64/build/init-build-env
 bitbake core-image-full-cmdline
 ```
 
@@ -172,3 +174,27 @@ memory=25GB
 **Question**: I get fetch errors during the bitbake build.
 
 **Answer**: Unfortunately this sometimes happens during the download of the required packages. If it happens, just rerun the build again until it succeeds.
+
+**Question**: I use WSL and ran out of space during the builds
+
+**Answer**: Even if you delete some files on the Linux system, the space will not automaticlly be reclaimed as free. To do this follow these steps:
+
+* First trim the disk on the Linux guest:
+
+```sudo fstrim /.```
+
+* Then shutdown WSL from a windows shell:
+
+```wsl.exe --shutdown```
+
+* Run diskpart from a windows shell:
+
+```diskpart```
+
+* In DISKPART select the virtual disk by customizing the following to your machine:
+
+```select vdisk file="C:\Users\<user name>\AppData\Local\Packages\<guest name>\LocalState\ext4.vhdx"```
+
+* And trigger the compacting:
+
+```compact vdisk```

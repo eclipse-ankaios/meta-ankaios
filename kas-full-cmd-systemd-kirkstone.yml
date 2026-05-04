@@ -1,0 +1,22 @@
+header:
+  version: 14
+  includes:
+    - kas-common-kirkstone.yml
+
+target: core-image-full-cmdline
+
+local_conf_header:
+  meta-ankaios-systemd: |
+    DISTRO_FEATURES:append = " systemd usrmerge"
+
+    VIRTUAL-RUNTIME_init_manager = "systemd"
+    VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
+
+    # Add additional nice tools ;)
+    IMAGE_INSTALL:append = " tmux"
+
+    # Add ankaios to the image
+    IMAGE_INSTALL:append = " ankaios-bin"
+
+    # Add 2GB of extra space to the root filesystem
+    IMAGE_ROOTFS_EXTRA_SPACE = "2000000"

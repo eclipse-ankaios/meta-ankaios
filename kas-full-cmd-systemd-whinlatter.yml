@@ -1,7 +1,7 @@
 header:
   version: 14
   includes:
-    - kas-common.yml
+    - kas-common-whinlatter.yml
 
 target: core-image-full-cmdline
 

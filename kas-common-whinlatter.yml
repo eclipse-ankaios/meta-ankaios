@@ -10,7 +10,7 @@ repos:
   bitbake:
     url: "https://git.openembedded.org/bitbake"
     branch: "2.16"
-    path: layers/bitbake
+    path: layers/whinlatter/bitbake
     layers: {}
 
   openembedded-core:
@@ -18,15 +18,14 @@ repos:
     branch: whinlatter
     layers:
       meta:
-    path: layers/openembedded-core
+    path: layers/whinlatter/openembedded-core
 
   meta-yocto:
     url: "https://git.yoctoproject.org/meta-yocto"
     branch: whinlatter
     layers:
       meta-poky:
-      meta-yocto-bsp:
-    path: layers/meta-yocto
+    path: layers/whinlatter/meta-yocto
 
   meta-openembedded:
     url: "https://git.openembedded.org/meta-openembedded"
@@ -36,12 +35,12 @@ repos:
       meta-python:
       meta-networking:
       meta-filesystems:
-    path: layers/meta-openembedded
+    path: layers/whinlatter/meta-openembedded
 
   meta-virtualization:
     url: "https://git.yoctoproject.org/meta-virtualization"
     branch: whinlatter
-    path: layers/meta-virtualization
+    path: layers/whinlatter/meta-virtualization
 
 bblayers_conf_header:
   meta-ankaios-common: |
@@ -59,6 +58,7 @@ local_conf_header:
     # Shared cache directories across all Ankaios build directories
     DL_DIR = "/workspace/bitbake-shared-cache/downloads"
     SSTATE_DIR = "/workspace/bitbake-shared-cache/sstate-cache"
+    BB_HASHSERVE_DB_DIR = "${SSTATE_DIR}"
 
     BB_DISKMON_DIRS ??= "\
         STOPTASKS,${TMPDIR},1G,100K \
@@ -80,9 +80,10 @@ local_conf_header:
     # No SDL (Simple DirectMedia Layer) support required for the minimal image
     # PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
 
-    # Uncomment to build an uncompressed image that does not require to run with snapshot
-    # IMAGE_FSTYPES:remove = " ext4.zst"
-    # IMAGE_FSTYPES:append = " ext4"
+    # Build an uncompressed image. Run with snapshot to discard changes after running.
+    IMAGE_FSTYPES:remove = " ext4.zst"
+    IMAGE_FSTYPES:append = " ext4"
+    QB_DEFAULT_FSTYPE = "ext4"
 
     DISTRO_FEATURES:append = " virtualization"
 

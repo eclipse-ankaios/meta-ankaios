@@ -1,7 +1,7 @@
 header:
   version: 14
   includes:
-    - kas-common.yml
+    - kas-common-kirkstone.yml
 
 target: core-image-minimal
 
@@ -12,7 +12,7 @@ local_conf_header:
     IMAGE_INSTALL:append = " init-basics"
 
     # Add ankaios to the image (provides conditional systemd/sysvinit service integration)
-    IMAGE_INSTALL:append = " ankaios"
+    IMAGE_INSTALL:append = " ankaios-bin"
 
     # Add 2GB of extra space to the root filesystem
     IMAGE_ROOTFS_EXTRA_SPACE = "2000000"
