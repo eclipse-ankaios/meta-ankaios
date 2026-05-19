@@ -105,7 +105,8 @@
                         "description": "Poky distribution with Ankaios and SysVinit on Wrynose",
                         "setup-dir-name": "ankaios-sysvinit-wrynose-$machine",
                         "oe-fragments": [
-                            "meta-ankaios/ankaios/minimal-sysvinit"
+                            "meta-ankaios/ankaios/minimal-sysvinit",
+                            "meta-ankaios/ankaios/wrynose-extras"
                         ]
                     },
                     {
@@ -113,7 +114,8 @@
                         "description": "Poky distribution with Ankaios and systemd on Wrynose",
                         "setup-dir-name": "ankaios-systemd-wrynose-$machine",
                         "oe-fragments": [
-                            "meta-ankaios/ankaios/full-systemd"
+                            "meta-ankaios/ankaios/full-systemd",
+                            "meta-ankaios/ankaios/wrynose-extras"
                         ]
                     }
                 ]
