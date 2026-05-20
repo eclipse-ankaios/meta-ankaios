@@ -13,11 +13,12 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 # Build dependencies
 DEPENDS += "protobuf-native"
 
-PV = "1.0.0"
+PV = "1.0.1"
 
 SRC_URI = "\
     git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=release-1.0 \
     file://state.yaml \
+    file://ank.conf \
     file://ank-server.conf \
     file://ank-agent.conf \
     file://ank-server.service \
@@ -26,8 +27,8 @@ SRC_URI = "\
     file://ank-agent;subdir=init-scripts \
 "
 
-# v1.0.0 tag commit
-SRCREV = "6e5c3fcc700aaafce2bbab875466f8cb9ee22c79"
+# v1.0.1 tag commit
+SRCREV = "cde70616706b58fd03e4de3f7423addaffa58720"
 
 require ${BPN}-crates.inc
 
@@ -43,7 +44,9 @@ PACKAGE_BEFORE_PN = "ank ank-agent ank-server"
 
 ALLOW_EMPTY:${PN} = "1"
 
-FILES:ank += "${bindir}/ank"
+FILES:ank += "${bindir}/ank \
+    ${sysconfdir}/ankaios/ank.conf \
+"
 
 FILES:ank-agent += "\
     ${bindir}/ank-agent \
@@ -62,6 +65,7 @@ FILES:ank-server += "\
 
 RDEPENDS:${PN} = "ank ank-agent ank-server"
 
+CONFFILES:ank = "${sysconfdir}/ankaios/ank.conf"
 CONFFILES:ank-server = "${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
 CONFFILES:ank-agent = "${sysconfdir}/ankaios/ank-agent.conf"
 
@@ -87,6 +91,7 @@ do_install() {
     # Install configuration directory
     install -d ${D}${sysconfdir}/ankaios
     install -m 0644 ${UNPACKDIR}/state.yaml ${D}${sysconfdir}/ankaios/
+    install -m 0644 ${UNPACKDIR}/ank.conf ${D}${sysconfdir}/ankaios/
     install -m 0644 ${UNPACKDIR}/ank-server.conf ${D}${sysconfdir}/ankaios/
     install -m 0644 ${UNPACKDIR}/ank-agent.conf ${D}${sysconfdir}/ankaios/
 
