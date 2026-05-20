@@ -68,7 +68,7 @@ build-systemd-full-rpi5: bitbake-setup-repo (bitbake-setup-init-or-update "syste
 
 lint:
 	@set -eu; \
-	files="$(find recipes-ankaios -type f -name '*.bb' | sort)"; \
+	files="$(find recipes-ankaios recipes-helpers recipes-kernel -type f -name '*.bb' | sort)"; \
 	failed=0; \
 	for file in $files; do \
 		echo "PARSED: $file"; \
