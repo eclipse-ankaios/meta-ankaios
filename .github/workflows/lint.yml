@@ -13,8 +13,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Lint recipes
-        # TODO: Once the devcontainer image is pushed to ghcr.io, use the
-        # prebuilt image instead of building it on every run.
         uses: devcontainers/ci@b63b30de439b47a52267f241112c5b453b673db5 # v0.3
         with:
+          imageName: ghcr.io/eclipse-ankaios/meta-ankaios-devcontainer
           runCmd: just lint
