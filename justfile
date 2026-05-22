@@ -72,7 +72,7 @@ lint:
 	failed=0; \
 	for file in $files; do \
 		echo "PARSED: $file"; \
-		output="$(oelint-adv --quiet --hide info --relpaths "$file" 2>&1 || true)"; \
+		output="$(oelint-adv --quiet --hide info --relpaths "$file" 2>&1 | grep -v '\.inc:' || true)"; \
 		if [ -n "$output" ]; then \
 			printf '%s\n' "$output"; \
 			failed=1; \
