@@ -10,7 +10,7 @@ jobs:
     name: Recipe lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Lint recipes
         uses: devcontainers/ci@b63b30de439b47a52267f241112c5b453b673db5 # v0.3
