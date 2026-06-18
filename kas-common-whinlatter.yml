@@ -90,6 +90,9 @@ local_conf_header:
     # Add additional common tools
     IMAGE_INSTALL:append = " curl"
 
+    # Use crun as the default container runtime
+    VIRTUAL-RUNTIME_container_runtime = "crun"
+
     # Add podman to the image
     IMAGE_INSTALL:append = " podman"
     # Required for the podman CNI portmap networking

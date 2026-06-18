@@ -1,6 +1,7 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/linux-yocto:"
 
 SRC_URI += "${@'file://podman-nft.scc' if d.getVar('DISTRO_CODENAME') == 'kirkstone' else ''}"
+SRC_URI += "file://cgroups-cpu.scc"
 
 # CVE-2026-31431: crypto: algif_aead - Revert to operating out-of-place
 # Bump vulnerable linux-yocto kernels to patched versions.
