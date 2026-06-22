@@ -1,10 +1,14 @@
-# Provides storage.conf and subuid/subgid for rootless container support.
-FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+# Provides subuid/subgid for rootless container support.
 
-SRC_URI += " file://subuid file://subgid"
+pkg_postinst:${PN}() {
+	rootfs="$D"
+	if [ -z "$rootfs" ]; then
+		rootfs="/"
+	fi
 
-do_install:append() {
-	install -d ${D}${sysconfdir}
-	install -m 0644 ${UNPACKDIR}/subuid ${D}${sysconfdir}/subuid
-	install -m 0644 ${UNPACKDIR}/subgid ${D}${sysconfdir}/subgid
+	for map in subuid subgid; do
+		map_file="$rootfs${sysconfdir}/$map"
+		touch "$map_file"
+		grep -q '^containers:100000:65536$' "$map_file" || echo 'containers:100000:65536' >> "$map_file"
+	done
 }
