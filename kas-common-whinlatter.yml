@@ -10,12 +10,14 @@ repos:
   bitbake:
     url: "https://git.openembedded.org/bitbake"
     branch: "2.16"
+    rev: "713fbbdb9ecc195ceb2216a2345e0d79dbee2135"
     path: layers/whinlatter/bitbake
     layers: {}
 
   openembedded-core:
     url: "https://git.openembedded.org/openembedded-core"
     branch: whinlatter
+    rev: "8751ec83421192fc0f8495fb95798f9eb7be77a0"
     layers:
       meta:
     path: layers/whinlatter/openembedded-core
@@ -23,6 +25,7 @@ repos:
   meta-yocto:
     url: "https://git.yoctoproject.org/meta-yocto"
     branch: whinlatter
+    rev: "3f2e6b6fadfa542f0fe3738375a2f9fcbd4c1f6e"
     layers:
       meta-poky:
     path: layers/whinlatter/meta-yocto
@@ -30,6 +33,7 @@ repos:
   meta-openembedded:
     url: "https://git.openembedded.org/meta-openembedded"
     branch: whinlatter
+    rev: "f52f32952cb9717949f8bc3d3ccf6c4c5a59521f"
     layers:
       meta-oe:
       meta-python:
@@ -40,6 +44,7 @@ repos:
   meta-virtualization:
     url: "https://git.yoctoproject.org/meta-virtualization"
     branch: whinlatter
+    rev: "8f03a0cc8950ef5d5e4f11d9ae494946d1991e45"
     path: layers/whinlatter/meta-virtualization
 
 bblayers_conf_header:
