@@ -56,8 +56,8 @@ local_conf_header:
     PATCHRESOLVE = "noop"
 
     # Shared cache directories across all Ankaios build directories
-    DL_DIR = "/workspace/bitbake-shared-cache/downloads"
-    SSTATE_DIR = "/workspace/bitbake-shared-cache/sstate-cache"
+    DL_DIR = "${TOPDIR}/../bitbake-shared-cache/downloads"
+    SSTATE_DIR = "${TOPDIR}/../bitbake-shared-cache/sstate-cache"
     BB_HASHSERVE_DB_DIR = "${SSTATE_DIR}"
 
     BB_DISKMON_DIRS ??= "\
@@ -89,6 +89,9 @@ local_conf_header:
 
     # Add additional common tools
     IMAGE_INSTALL:append = " curl"
+
+    # Use crun as the default container runtime
+    VIRTUAL-RUNTIME_container_runtime = "crun"
 
     # Add podman to the image
     IMAGE_INSTALL:append = " podman"

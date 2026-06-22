@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable CFS bandwidth for cgroups v2 cpu.max"
+define KFEATURE_COMPATIBILITY all
+
+kconf hardware cgroups-cpu.cfg

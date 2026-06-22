@@ -10,7 +10,7 @@
                     }
                 },
                 "branch": "2.16",
-                "rev": "2.16"
+                "rev": "713fbbdb9ecc195ceb2216a2345e0d79dbee2135"
             }
         },
         "openembedded-core": {
@@ -21,7 +21,7 @@
                     }
                 },
                 "branch": "whinlatter",
-                "rev": "whinlatter"
+                "rev": "8751ec83421192fc0f8495fb95798f9eb7be77a0"
             }
         },
         "meta-yocto": {
@@ -32,7 +32,7 @@
                     }
                 },
                 "branch": "whinlatter",
-                "rev": "whinlatter"
+                "rev": "3f2e6b6fadfa542f0fe3738375a2f9fcbd4c1f6e"
             }
         },
         "meta-openembedded": {
@@ -43,7 +43,7 @@
                     }
                 },
                 "branch": "whinlatter",
-                "rev": "whinlatter"
+                "rev": "f52f32952cb9717949f8bc3d3ccf6c4c5a59521f"
             }
         },
         "meta-virtualization": {
@@ -54,7 +54,7 @@
                     }
                 },
                 "branch": "whinlatter",
-                "rev": "whinlatter"
+                "rev": "8f03a0cc8950ef5d5e4f11d9ae494946d1991e45"
             }
         },
         "meta-raspberrypi": {
@@ -65,7 +65,7 @@
                     }
                 },
                 "branch": "whinlatter",
-                "rev": "whinlatter"
+                "rev": "469e232c77d74cb030fe8a9af4ffe9127214a29b"
             }
         }
     },
