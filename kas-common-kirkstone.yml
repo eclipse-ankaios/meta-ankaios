@@ -10,12 +10,14 @@ repos:
   bitbake:
     url: "https://git.openembedded.org/bitbake"
     branch: "2.0"
+    commit: "a9f09b9e2f187f07a6f6dfd1caa3fd2f3d564a8a"
     path: layers/kirkstone/bitbake
     layers: {}
 
   openembedded-core:
     url: "https://git.openembedded.org/openembedded-core"
     branch: kirkstone
+    commit: "51259c7e933a2ac8ebc01604d6e65607b76b7b56"
     layers:
       meta:
     path: layers/kirkstone/openembedded-core
@@ -23,6 +25,7 @@ repos:
   meta-yocto:
     url: "https://git.yoctoproject.org/meta-yocto"
     branch: kirkstone
+    commit: "34e3c9a19b8b955116109a2e9528966db3fced37"
     layers:
       meta-poky:
     path: layers/kirkstone/meta-yocto
@@ -30,6 +33,7 @@ repos:
   meta-openembedded:
     url: "https://git.openembedded.org/meta-openembedded"
     branch: kirkstone
+    commit: "ce8539c941f6fcbecaca4d16640ac105c0595589"
     layers:
       meta-oe:
       meta-python:
@@ -40,6 +44,7 @@ repos:
   meta-virtualization:
     url: "https://git.yoctoproject.org/meta-virtualization"
     branch: kirkstone
+    commit: "92b6abcdfb6f12c4931247f0f29aaf5331984525"
     path: layers/kirkstone/meta-virtualization
 
 bblayers_conf_header:
@@ -80,6 +85,8 @@ local_conf_header:
     # PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
 
     DISTRO_FEATURES:append = " virtualization"
+
+    INHERIT += "ankaios-subid-map"
 
     # Kirkstone does not define UNPACKDIR; default it to WORKDIR so that
     # recipes can use S = "${UNPACKDIR}" on every release.
