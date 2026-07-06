@@ -55,7 +55,7 @@ Afterwards you can start a kas shell and run the image with qemu and login with 
 # First start the shell
 kas shell kas-minimal-sysvinit-wrynose.yml
 # And in the shell run qemu
-runqemu snapshot nographic slirp
+runqemu snapshot nographic slirp qemuparams="-m 1024"
 ```
 
 To build an image with the other 5 options, just use the desired config file.
