@@ -36,7 +36,7 @@ build-sysvinit-minimal-qemu: bitbake-setup-repo (bitbake-setup-init-or-update "s
 
 # Build and run wrynose minimal sysvinit image in QEMU (override with RELEASE=whinlatter)
 run-sysvinit-minimal-qemu: build-sysvinit-minimal-qemu
-	bash -c '. bitbake-builds/ankaios-sysvinit-{{RELEASE}}-qemux86-64/build/init-build-env && runqemu snapshot nographic slirp'
+	bash -c '. bitbake-builds/ankaios-sysvinit-{{RELEASE}}-qemux86-64/build/init-build-env && runqemu snapshot nographic slirp qemuparams="-m 1024"'
 
 # Build wrynose full-cmdline systemd image for QEMU (override with RELEASE=whinlatter)
 build-systemd-full-qemu: bitbake-setup-repo (bitbake-setup-init-or-update "systemd" "qemux86-64")
@@ -44,7 +44,7 @@ build-systemd-full-qemu: bitbake-setup-repo (bitbake-setup-init-or-update "syste
 
 # Build and run wrynose full-cmdline systemd image in QEMU (override with RELEASE=whinlatter)
 run-systemd-full-qemu: build-systemd-full-qemu
-	bash -c '. bitbake-builds/ankaios-systemd-{{RELEASE}}-qemux86-64/build/init-build-env && runqemu snapshot nographic slirp'
+	bash -c '. bitbake-builds/ankaios-systemd-{{RELEASE}}-qemux86-64/build/init-build-env && runqemu snapshot nographic slirp qemuparams="-m 1024"'
 
 # Build wrynose minimal sysvinit image for Raspberry Pi 4 (override with RELEASE=whinlatter)
 build-sysvinit-minimal-rpi4: bitbake-setup-repo (bitbake-setup-init-or-update "sysvinit" "raspberrypi4-64")
