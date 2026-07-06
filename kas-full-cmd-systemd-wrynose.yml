@@ -8,9 +8,9 @@ target: core-image-full-cmdline
 local_conf_header:
   meta-ankaios-systemd: |
     DISTRO_FEATURES:append = " systemd usrmerge"
+    DISTRO_FEATURES:remove = "sysvinit"
 
     VIRTUAL-RUNTIME_init_manager = "systemd"
-    VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
 
     # Add additional nice tools ;)
     IMAGE_INSTALL:append = " tmux"
