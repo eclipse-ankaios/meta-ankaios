@@ -9,27 +9,27 @@ repos:
 
   bitbake:
     url: "https://git.openembedded.org/bitbake"
-    branch: "2.18"
+    commit: "acfe02fa38b5da9e6a36c6cedcf91d4fcbefbfbd"
     path: layers/wrynose/bitbake
     layers: {}
 
   openembedded-core:
     url: "https://git.openembedded.org/openembedded-core"
-    branch: wrynose
+    commit: "5d1aa5c806c061a2994f4decb59016610f093213"
     layers:
       meta:
     path: layers/wrynose/openembedded-core
 
   meta-yocto:
     url: "https://git.yoctoproject.org/meta-yocto"
-    branch: wrynose
+    commit: "24c24cef5d1523fefe43a3e3d34667b37ae551f3"
     layers:
       meta-poky:
     path: layers/wrynose/meta-yocto
 
   meta-openembedded:
     url: "https://git.openembedded.org/meta-openembedded"
-    branch: wrynose
+    commit: "100027977216601000cbefc42c2ff6cf667e7b5e"
     layers:
       meta-oe:
       meta-python:
@@ -39,7 +39,7 @@ repos:
 
   meta-virtualization:
     url: "https://git.yoctoproject.org/meta-virtualization"
-    branch: master
+    commit: "e456f38266f55e32521903cddd8a0f9fee2fd5eb"
     path: layers/wrynose/meta-virtualization
 
 bblayers_conf_header:
@@ -86,6 +86,8 @@ local_conf_header:
     QB_DEFAULT_FSTYPE = "ext4"
 
     DISTRO_FEATURES:append = " virtualization"
+
+    INHERIT += "ankaios-subid-map"
 
     # Add additional common tools
     IMAGE_INSTALL:append = " curl"
