@@ -39,7 +39,7 @@ repos:
 
   meta-virtualization:
     url: "https://git.yoctoproject.org/meta-virtualization"
-    commit: "e456f38266f55e32521903cddd8a0f9fee2fd5eb"
+    commit: "959a211fbba059689a1c3a1b24fe0abb9224281a"
     path: layers/wrynose/meta-virtualization
 
 bblayers_conf_header:
