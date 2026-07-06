@@ -12,7 +12,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-RELEASE := "wrynose"
+RELEASE := "whinlatter"
 BITBAKE_SETUP_CONFIG := "./bitbake-setup-ankaios-" + RELEASE + ".conf.json"
 
 bitbake-setup-repo:
