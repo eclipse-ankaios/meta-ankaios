@@ -1,4 +1,0 @@
-define KFEATURE_DESCRIPTION "Enable nftables and netfilter features needed by Podman CNI portmap"
-define KFEATURE_COMPATIBILITY board
-
-kconf non-hardware podman-nft.cfg
