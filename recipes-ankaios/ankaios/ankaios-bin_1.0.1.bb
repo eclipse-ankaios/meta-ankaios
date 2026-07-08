@@ -34,8 +34,8 @@ SRC_URI[bin-amd64.sha256sum] = "72ed5e90652465ea31b53f04f93b0b5b1bdaeb9e4fe8e1a8
 SRC_URI[bin-arm64.sha256sum] = "ac8a01f4a49123731aba00c9ce9c6ccf3322a3ef1c085cce7cc0bcd54accd1ec"
 SRC_URI[license.sha256sum] = "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
 
-# The binaries are only unpacked into UNPACKDIR
-S = "${UNPACKDIR}"
+# The binaries are only unpacked into WORKDIR
+S = "${WORKDIR}"
 
 # Package split:
 # - ank-server-bin: server binary + server config (+ systemd unit)
@@ -99,13 +99,13 @@ do_install() {
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
         install -d ${D}${systemd_system_unitdir}
-        install -m 0644 ${UNPACKDIR}/ank-server.service ${D}${systemd_system_unitdir}/
-        install -m 0644 ${UNPACKDIR}/ank-agent.service ${D}${systemd_system_unitdir}/
+        install -m 0644 ${WORKDIR}/ank-server.service ${D}${systemd_system_unitdir}/
+        install -m 0644 ${WORKDIR}/ank-agent.service ${D}${systemd_system_unitdir}/
     fi
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', 'true', 'false', d)}; then
         install -d ${D}${sysconfdir}/init.d
-        install -m 0755 ${UNPACKDIR}/init-scripts/ank-server ${D}${sysconfdir}/init.d/ank-server
-        install -m 0755 ${UNPACKDIR}/init-scripts/ank-agent ${D}${sysconfdir}/init.d/ank-agent
+        install -m 0755 ${WORKDIR}/init-scripts/ank-server ${D}${sysconfdir}/init.d/ank-server
+        install -m 0755 ${WORKDIR}/init-scripts/ank-agent ${D}${sysconfdir}/init.d/ank-agent
     fi
 }
