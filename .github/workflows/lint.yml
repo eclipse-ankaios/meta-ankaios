@@ -1,0 +1,31 @@
+name: Lint recipes
+
+on:
+  push:
+    branches: [whinlatter]
+  pull_request:
+
+jobs:
+  lint:
+    name: Recipe lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Lint recipes
+        uses: devcontainers/ci@b63b30de439b47a52267f241112c5b453b673db5 # v0.3
+        with:
+          imageName: ghcr.io/eclipse-ankaios/ankaios-yocto-devcontainer
+          runCmd: |
+            set -eu
+            files="$(find recipes-ankaios -type f -name '*.bb' | sort)"
+            failed=0
+            for file in $files; do
+              echo "PARSED: $file"
+              output="$(oelint-adv --quiet --hide info --relpaths "$file" 2>&1 | grep -v '\.inc:' || true)"
+              if [ -n "$output" ]; then
+                printf '%s\n' "$output"
+                failed=1
+              fi
+            done
+            [ "$failed" -eq 0 ]
