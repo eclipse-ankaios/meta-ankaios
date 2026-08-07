@@ -16,6 +16,7 @@ REQUIRED_DISTRO_FEATURES ?= "virtualization seccomp systemd"
 COMPATIBLE_MACHINE = "qemux86-64"
 
 # Debug/test image: passwordless root login on the serial console
+# nooelint: oelint.var.badimagefeature.allow-empty-password oelint.var.badimagefeature.empty-root-password oelint.var.badimagefeature.allow-root-login
 IMAGE_FEATURES += "allow-empty-password empty-root-password allow-root-login"
 
 # ankaios pulls server + agent + ank CLI; podman is the workload runtime the
