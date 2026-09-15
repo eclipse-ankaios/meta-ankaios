@@ -11,7 +11,7 @@ CVE_PRODUCT = "eclipse:ankaios"
 # crates, derived from upstream deny.toml (release-1.0) and verified against
 # ankaios-crates.inc (ring->OpenSSL, foldhash->Zlib, borrow-or-share->MIT-0,
 # unicode-ident->Unicode-3.0).
-LICENSE = "Apache-2.0 & MIT & BSD-3-Clause & ISC & Unicode-3.0 & Zlib & MIT-0 & OpenSSL"
+LICENSE = "Apache-2.0 & BSD-3-Clause & ISC & MIT & MIT-0 & OpenSSL & Unicode-3.0 & Zlib"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 # Container runtime stack is not supported on MIPS
@@ -20,7 +20,7 @@ COMPATIBLE_HOST = "^(?!(qemu)?mips).*"
 # Build dependencies
 DEPENDS += "protobuf-native"
 
-PV = "1.0.1+git"
+PV = "1.0.3+git"
 
 SRC_URI = "\
     git://github.com/eclipse-ankaios/ankaios.git;protocol=https;branch=release-1.0 \
@@ -36,14 +36,15 @@ SRC_URI = "\
     file://ank-agent.default \
 "
 
-# v1.0.1 tag commit
+# v1.0.3 tag commit
 # When bumping SRCREV, re-diff upstream deny.toml and re-check LICENSE against the crate graph.
-SRCREV = "cde70616706b58fd03e4de3f7423addaffa58720"
+SRCREV = "3f7ab7f148e814c57cb7de1e2bb11b9a05b7814b"
+
+# cargo-update-recipe-crates provides the `update_crates` task used to
+# regenerate ankaios-crates.inc after an SRCREV bump.
+inherit cargo cargo-update-recipe-crates systemd update-rc.d
 
 require ${BPN}-crates.inc
-
-# Add cargo-update-recipe-crates so `bitbake -c update_crates ankaios` works for future maintenance
-inherit cargo systemd update-rc.d
 
 # Package split:
 # - ank-server: server binary + server config + systemd unit
