@@ -30,8 +30,8 @@ SRC_URI = "\
 SRC_URI:append:qemux86-64 = " https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-amd64.tar.gz;name=bin-amd64"
 SRC_URI:append = " ${@' https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-arm64.tar.gz;name=bin-arm64' if d.getVar('MACHINE') in ('raspberrypi4-64', 'raspberrypi5') else ''}"
 
-SRC_URI[bin-amd64.sha256sum] = "72ed5e90652465ea31b53f04f93b0b5b1bdaeb9e4fe8e1a8a1a77994adad2eca"
-SRC_URI[bin-arm64.sha256sum] = "ac8a01f4a49123731aba00c9ce9c6ccf3322a3ef1c085cce7cc0bcd54accd1ec"
+SRC_URI[bin-amd64.sha256sum] = "ff3cdd88566f25ec3bc3362b2152bf498ce977f987baf82252c10d03d6261fc6"
+SRC_URI[bin-arm64.sha256sum] = "62cce84744884f7d4c76f94fed7f952f5390bd9e2d96b2c446bbfd2ab4f07a64"
 SRC_URI[license.sha256sum] = "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
 
 # The binaries are only unpacked into UNPACKDIR
