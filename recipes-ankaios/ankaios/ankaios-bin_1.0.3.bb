@@ -1,14 +1,20 @@
 SUMMARY = "Eclipse Ankaios: Lightweight container orchestrator for embedded Linux"
-DESCRIPTION = "Eclipse Ankaios is a lightweight container runtime for embedded Linux systems. This recipe installs the official prebuilt release binaries."
+DESCRIPTION = "Eclipse Ankaios is a lightweight container/workload orchestrator for embedded Linux systems. This recipe installs the official prebuilt release binaries."
 HOMEPAGE = "https://eclipse-ankaios.github.io/ankaios/latest/"
 BUGTRACKER = "https://github.com/eclipse-ankaios/ankaios/issues"
 
-SECTION = "base"
+SECTION = "virtualization/tools"
 
 CVE_PRODUCT = "eclipse:ankaios"
 
-LICENSE = "Apache-2.0"
+# Ankaios itself is Apache-2.0; the prebuilt binaries statically link the same
+# >700 vendored Rust crates as the from-source build, so the effective license is
+# their union (derived from upstream deny.toml, release-1.0).
+LICENSE = "Apache-2.0 & MIT & BSD-3-Clause & ISC & Unicode-3.0 & Zlib & MIT-0 & OpenSSL"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
+
+# Container runtime stack is not supported on MIPS
+COMPATIBLE_HOST = "^(?!(qemu)?mips).*"
 
 inherit systemd update-rc.d
 
@@ -25,6 +31,8 @@ SRC_URI = "\
     file://ank-agent.service \
     file://ank-server;subdir=init-scripts \
     file://ank-agent;subdir=init-scripts \
+    file://ank-server.default \
+    file://ank-agent.default \
 "
 
 SRC_URI:append:qemux86-64 = " https://github.com/${ANKAIOS_GITHUB_REPO}/releases/download/${ANKAIOS_RELEASE_TAG}/ankaios-linux-amd64.tar.gz;name=bin-amd64"
@@ -54,6 +62,7 @@ FILES:ank-agent-bin += "\
     ${bindir}/ank-agent \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-agent.service', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-agent', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/default/ank-agent', '', d)} \
     ${sysconfdir}/ankaios/ank-agent.conf \
 "
 
@@ -61,20 +70,29 @@ FILES:ank-server-bin += "\
     ${bindir}/ank-server \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/ank-server.service', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/init.d/ank-server', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/default/ank-server', '', d)} \
     ${sysconfdir}/ankaios/state.yaml \
     ${sysconfdir}/ankaios/ank-server.conf \
 "
 
 RDEPENDS:${PN} = "ank-agent-bin ank-bin ank-server-bin"
 
+# The agent shells out to a container runtime to launch workloads
+# Ankaios does not require the following to start, but running workloads requires Podman and/or containerd + nerdctl.
+RRECOMMENDS:ank-agent-bin += "podman \
+                              containerd \
+                              nerdctl \
+                              "
+
 CONFFILES:ank-bin = "${sysconfdir}/ankaios/ank.conf"
-CONFFILES:ank-server-bin = "${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf"
-CONFFILES:ank-agent-bin = "${sysconfdir}/ankaios/ank-agent.conf"
+CONFFILES:ank-server-bin = "${sysconfdir}/ankaios/state.yaml ${sysconfdir}/ankaios/ank-server.conf ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/default/ank-server', '', d)}"
+CONFFILES:ank-agent-bin = "${sysconfdir}/ankaios/ank-agent.conf ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', '${sysconfdir}/default/ank-agent', '', d)}"
 
 SYSTEMD_PACKAGES = "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'ank-server-bin ank-agent-bin', '', d)}"
 SYSTEMD_SERVICE:ank-server-bin = "ank-server.service"
 SYSTEMD_SERVICE:ank-agent-bin = "ank-agent.service"
-SYSTEMD_AUTO_ENABLE = "enable"
+SYSTEMD_AUTO_ENABLE:ank-server-bin = "enable"
+SYSTEMD_AUTO_ENABLE:ank-agent-bin = "enable"
 
 INITSCRIPT_PACKAGES = "${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', 'ank-server-bin ank-agent-bin', '', d)}"
 INITSCRIPT_NAME:ank-server-bin = "ank-server"
@@ -107,5 +125,9 @@ do_install() {
         install -d ${D}${sysconfdir}/init.d
         install -m 0755 ${UNPACKDIR}/init-scripts/ank-server ${D}${sysconfdir}/init.d/ank-server
         install -m 0755 ${UNPACKDIR}/init-scripts/ank-agent ${D}${sysconfdir}/init.d/ank-agent
+
+        install -d ${D}${sysconfdir}/default
+        install -m 0644 ${UNPACKDIR}/ank-server.default ${D}${sysconfdir}/default/ank-server
+        install -m 0644 ${UNPACKDIR}/ank-agent.default ${D}${sysconfdir}/default/ank-agent
     fi
 }
