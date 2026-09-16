@@ -12,6 +12,7 @@ set -e
 
 NAME="ank-server"
 DAEMON="/usr/bin/ank-server"
+CONFIG="/etc/ankaios/ank-server.conf"
 PIDFILE="/run/${NAME}.pid"
 
 [ -r "/etc/default/${NAME}" ] && . "/etc/default/${NAME}"
@@ -37,7 +38,7 @@ do_start() {
     export RUST_LOG
     mkdir -p "$(dirname "$PIDFILE")" "$(dirname "$LOGFILE")"
 
-    start-stop-daemon -S -b -m -p "$PIDFILE" -x /bin/sh -- -c "exec \"$DAEMON\" >>\"$LOGFILE\" 2>&1"
+    start-stop-daemon -S -b -m -p "$PIDFILE" -x /bin/sh -- -c "exec \"$DAEMON\" -x \"$CONFIG\" >>\"$LOGFILE\" 2>&1"
 }
 
 do_stop() {
